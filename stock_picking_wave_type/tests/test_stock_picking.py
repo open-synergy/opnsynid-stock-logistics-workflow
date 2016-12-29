@@ -7,6 +7,7 @@ from openerp.exceptions import Warning as UserError
 
 
 class TestStockPicking(BaseStockPickingWaveType):
+
     def test_constrains(self):
         self.picking_wave_3 = self.create_picking_wave(
             self.type_no_sequence)
