@@ -10,7 +10,13 @@ class StockPickingWave(models.Model):
 
     type_id = fields.Many2one(
         string="Picking Wave Type",
-        comodel_name="stock.picking_wave_type"
+        comodel_name="stock.picking_wave_type",
+        readonly=True,
+        states={
+            "draft": [
+                ("readonly", False),
+            ],
+        },
     )
 
     @api.model

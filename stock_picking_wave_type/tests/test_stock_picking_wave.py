@@ -6,6 +6,7 @@ from .base import BaseStockPickingWaveType
 
 
 class TestStockPickingWave(BaseStockPickingWaveType):
+
     def test_create_with_sequence(self):
         sequence_id =\
             self.type_with_sequence.sequence_id

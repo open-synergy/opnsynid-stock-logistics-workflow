@@ -6,6 +6,7 @@ from openerp.tests.common import TransactionCase
 
 
 class BaseStockPickingWaveType(TransactionCase):
+
     def setUp(self, *args, **kwargs):
         super(BaseStockPickingWaveType, self).setUp(*args, **kwargs)
         # Objects

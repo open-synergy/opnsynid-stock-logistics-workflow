@@ -10,14 +10,19 @@ class StockPicking(models.Model):
     _inherit = "stock.picking"
 
     @api.constrains(
-        'picking_type_id', 'wave_id.type_id.allowed_picking_type_ids')
+        "picking_type_id", "wave_id")
     def _check_picking_type_id(self):
-        type_id = self.wave_id.type_id
-        allowed_picking_type_ids =\
-            self.wave_id.type_id.allowed_picking_type_ids
-        picking_type_id = self.picking_type_id
+        for picking in self:
+            picking_type_id = picking.picking_type_id
 
-        if type_id:
-            if picking_type_id not in allowed_picking_type_ids:
+            if not picking.wave_id or not picking.picking_type_id:
+                continue
+
+            if not picking.wave_id.type_id:
+                continue
+
+            wave_type = picking.wave_id.type_id
+            if picking.picking_type_id not in wave_type.\
+                    allowed_picking_type_ids:
                 strWarning = _("%s not allowed") % (picking_type_id.name)
                 raise UserError(_('Warning'), strWarning)

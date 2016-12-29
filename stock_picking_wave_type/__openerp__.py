@@ -10,9 +10,12 @@
     "author": "OpenSynergy Indonesia",
     "license": "AGPL-3",
     "installable": True,
-    "depends": ["stock_picking_wave"],
+    "depends": [
+        "stock_picking_wave",
+    ],
     "data": [
         "security/ir.model.access.csv",
-        "views/stock_picking_wave_type_view.xml"
+        "views/stock_picking_wave_type_view.xml",
+        "views/stock_picking_wave_view.xml",
     ],
 }
