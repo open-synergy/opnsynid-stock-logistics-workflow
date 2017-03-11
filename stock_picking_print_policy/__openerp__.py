@@ -14,6 +14,7 @@
         "stock_operation_type_create_menu",
     ],
     "data": [
+        "security/ir.model.access.csv",
         "views/stock_picking_type_views.xml",
     ],
 }
