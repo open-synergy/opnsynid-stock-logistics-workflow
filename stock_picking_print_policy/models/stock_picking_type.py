@@ -23,7 +23,7 @@ class StockPickingTypePrintPolicy(models.Model):
                 ("act_window_id", "=", policy.type_id.window_action_id.id),
                 ("view_mode", "=", "form"),
             ]
-            self.original_view_id = \
+            policy.original_view_id = \
                 self.env["ir.actions.act_window.view"].search(
                     criteria, limit=1)[0].view_id.id
 
