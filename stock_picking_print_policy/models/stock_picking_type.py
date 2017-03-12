@@ -105,7 +105,7 @@ class StockPickingTypePrintPolicy(models.Model):
         arch = """<data>
     <xpath expr=\"//field[@name='state']\" position=\"before\">
         <button name=\"%s\" type=\"action\"
-            %s string=\"%s\"/>
+            %s string=\"%s\" icon=\"gtk-print\"/>
     </xpath>
 </data> """ % (str(self.report_id.id), self._prepare_state() or "", self.name)
 
