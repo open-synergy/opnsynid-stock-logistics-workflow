@@ -9,7 +9,7 @@
         <data>
             <xpath expr="//button[@name='%(stock_account.action_stock_invoice_onshipping)d']" position="attributes">
                 <attribute name="groups"/>
-                <attribute name="attrs">{'invisible':['|','|',('state','!=','done'),('invoice_state','!=','2binvoiced'),('invoice_ok','=',True)]}</attribute>
+                <attribute name="attrs">{'invisible':['|','|',('state','!=','done'),('invoice_state','!=','2binvoiced'),('invoice_ok','=',False)]}</attribute>
                 <attribute name="states"/>
             </xpath>
         </data>
