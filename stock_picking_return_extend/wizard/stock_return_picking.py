@@ -22,7 +22,7 @@ class StockReturnPicking(models.TransientModel):
 
         new_picking = pick.copy(self._prepare_new_picking(pick))
         for line in self.product_return_moves:
-            res = self._prepare_new_move(pick, new_picking)
+            res = line._prepare_new_move(pick, new_picking)
             if not res:
                 continue
             returned_lines += 1
