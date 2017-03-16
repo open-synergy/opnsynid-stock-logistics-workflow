@@ -74,7 +74,7 @@ class StockReturnPicking(models.TransientModel):
         return res
 
 
-class StockReturnPickingLine(models.Model):
+class StockReturnPickingLine(models.TransientModel):
     _inherit = "stock.return.picking.line"
 
     @api.multi
