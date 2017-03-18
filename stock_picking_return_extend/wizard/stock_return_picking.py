@@ -39,7 +39,7 @@ class StockReturnPicking(models.TransientModel):
     def _cancel_assignment(self, picking):
         self.ensure_one()
         obj_move = self.env["stock.move"]
-        move_to_unreserve = obj_move.search([])
+        move_to_unreserve = obj_move
         for move in picking.move_lines:
             to_check_moves = [
                 move.move_dest_id] if move.move_dest_id.id else []
