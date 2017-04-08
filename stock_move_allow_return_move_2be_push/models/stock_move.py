@@ -11,7 +11,7 @@ class StockMove(models.Model):
     @api.multi
     def _prepare_allowed_domain(self):
         self.ensure_one()
-        domains = super(StockMove, self)._prapare_allowed_domain()
+        domains = super(StockMove, self)._prepare_allowed_domain()
         for domain in domains:
             if domain[1] == "origin_returned_move_id":
                 domains.remove(domain)
