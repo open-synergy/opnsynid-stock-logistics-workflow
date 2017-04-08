@@ -13,6 +13,6 @@ class StockMove(models.Model):
         self.ensure_one()
         domains = super(StockMove, self)._prepare_allowed_domain()
         for domain in domains:
-            if domain[1] == "origin_returned_move_id":
+            if domain[0] == "origin_returned_move_id":
                 domains.remove(domain)
         return domains
