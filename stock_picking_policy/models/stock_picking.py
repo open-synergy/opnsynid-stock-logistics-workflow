@@ -2,7 +2,7 @@
 # Copyright 2017 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import models, api, fields
+from openerp import models, api, fields, SUPERUSER_ID
 
 
 class StockPicking(models.Model):
@@ -19,98 +19,57 @@ class StockPicking(models.Model):
         "picking_type_id.unreserve_group_ids",
     )
     def _compute_policy(self):
-        obj_picking_type = self.env["stock.picking.type"]
+        user_id = self.env.user.id
         for picking in self:
-            picking.confirm_ok = picking.force_ok = picking.transfer_ok = \
-                picking.return_ok = picking.cancel_ok = \
-                picking.unreserve_ok = False
-            picking_id = self.env.context.get("default_picking_type_id", False)
-            if not picking_id:
+            picking_type = picking.picking_type_id
+            if user_id == SUPERUSER_ID:
+                picking.confirm_ok = True
+                picking.force_ok = True
+                picking.transfer_ok = True
+                picking.return_ok = True
+                picking.cancel_ok = True
+                picking.unreserve_ok = True
                 continue
-            picking_type = obj_picking_type.browse([picking_id])[0]
-            picking.confirm_ok = self._confirm_policy(picking_type)
-            picking.force_ok = self._force_policy(picking_type)
-            picking.transfer_ok = self._transfer_policy(picking_type)
-            picking.return_ok = self._return_policy(picking_type)
-            picking.cancel_ok = self._cancel_policy(picking_type)
-            picking.unreserve_ok = self._unreserve_policy(picking_type)
+
+            picking.confirm_ok =\
+                self._button_policy(picking_type, 'confirm')
+            picking.force_ok =\
+                self._button_policy(picking_type, 'force')
+            picking.transfer_ok =\
+                self._button_policy(picking_type, 'transfer')
+            picking.return_ok =\
+                self._button_policy(picking_type, 'return')
+            picking.cancel_ok =\
+                self._button_policy(picking_type, 'cancel')
+            picking.unreserve_ok =\
+                self._button_policy(picking_type, 'unreserve')
 
     @api.model
-    def _confirm_policy(self, picking_type):
-        result = False
+    def _button_policy(self, picking_type, button_type):
         user = self.env.user
-        confirm_group_ids = picking_type.confirm_group_ids.ids
         group_ids = user.groups_id.ids
-        if not picking_type.confirm_group_ids.ids:
-            result = True
-        else:
-            if (set(confirm_group_ids) & set(group_ids)):
-                result = True
-        return result
+        button_group_ids = []
 
-    @api.model
-    def _force_policy(self, picking_type):
-        result = False
-        user = self.env.user
-        force_group_ids = picking_type.force_group_ids.ids
-        group_ids = user.groups_id.ids
-        if not picking_type.force_group_ids.ids:
-            result = True
-        else:
-            if (set(force_group_ids) & set(group_ids)):
-                result = True
-        return result
+        if button_type == 'confirm':
+            button_group_ids = picking_type.confirm_group_ids.ids
+        elif button_type == 'force':
+            button_group_ids = picking_type.force_group_ids.ids
+        elif button_type == 'transfer':
+            button_group_ids = picking_type.transfer_group_ids.ids
+        elif button_type == 'return':
+            button_group_ids = picking_type.return_group_ids.ids
+        elif button_type == 'cancel':
+            button_group_ids = picking_type.cancel_group_ids.ids
+        elif button_type == 'unreserve':
+            button_group_ids = picking_type.unreserve_group_ids.ids
 
-    @api.model
-    def _transfer_policy(self, picking_type):
-        result = False
-        user = self.env.user
-        transfer_group_ids = picking_type.transfer_group_ids.ids
-        group_ids = user.groups_id.ids
-        if not picking_type.transfer_group_ids.ids:
-            result = True
-        else:
-            if (set(transfer_group_ids) & set(group_ids)):
+        if button_group_ids:
+            if (set(button_group_ids) & set(group_ids)):
                 result = True
-        return result
-
-    @api.model
-    def _return_policy(self, picking_type):
-        result = False
-        user = self.env.user
-        return_group_ids = picking_type.return_group_ids.ids
-        group_ids = user.groups_id.ids
-        if not picking_type.return_group_ids.ids:
-            result = True
+            else:
+                result = False
         else:
-            if (set(return_group_ids) & set(group_ids)):
-                result = True
-        return result
-
-    @api.model
-    def _cancel_policy(self, picking_type):
-        result = False
-        user = self.env.user
-        cancel_group_ids = picking_type.cancel_group_ids.ids
-        group_ids = user.groups_id.ids
-        if not picking_type.cancel_group_ids.ids:
             result = True
-        else:
-            if (set(cancel_group_ids) & set(group_ids)):
-                result = True
-        return result
-
-    @api.model
-    def _unreserve_policy(self, picking_type):
-        result = False
-        user = self.env.user
-        unreserve_group_ids = picking_type.unreserve_group_ids.ids
-        group_ids = user.groups_id.ids
-        if not picking_type.unreserve_group_ids.ids:
-            result = True
-        else:
-            if (set(unreserve_group_ids) & set(group_ids)):
-                result = True
         return result
 
     confirm_ok = fields.Boolean(
