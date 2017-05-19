@@ -40,20 +40,13 @@ class StockMove(models.Model):
     def _find_push_rule(self):
         obj_rule = self.env["stock.location.path"]
         domain = self._prepare_init_domain()
-        product_routes = self._find_product_related_push_rule_route()
-        if product_routes[0]:
-            domain += product_routes[1]
-            sequence = product_routes[2]
-        else:
-            wh_routes = self._find_wh_related_push_rule_route()
-            if wh_routes[0]:
-                domain += wh_routes[1]
-                sequence = wh_routes[2]
-            else:
+        rules = self._find_product_related_push_rule(domain)
+        if len(rules) == 0:
+            rules = self._find_wh_related_push_rule(domain)
+            if rules == 0:
                 domain += [("route_id", "=", False)]
-                sequence = "sequence"
-        rules = obj_rule.search(
-            domain, order=sequence)
+                rules = obj_rule.search(
+                    domain, order="sequence")
         if len(rules) > 0:
             rule = rules[0]
         else:
@@ -61,29 +54,21 @@ class StockMove(models.Model):
         return rule
 
     @api.multi
-    def _find_product_related_push_rule_route(self):
+    def _find_product_related_push_rule(self, domain):
         self.ensure_one()
-        flag = False
-        domain = []
-        sequence = ""
+        obj_rule = self.env["stock.location.path"]
         routes = self.product_id.route_ids + \
             self.product_id.categ_id.total_route_ids
-        if len(routes) > 0:
-            flag = True
-            domain = [("route_id", "in", routes.ids)]
-        return [flag, domain, sequence]
+        dom = domain + [("route_id", "in", routes.ids)]
+        return obj_rule.search(dom)
 
     @api.multi
-    def _find_wh_related_push_rule_route(self):
+    def _find_wh_related_push_rule(self, domain):
         self.ensure_one()
-        flag = False
-        domain = []
-        sequence = ""
+        obj_rule = self.env["stock.location.path"]
         if self.warehouse_id:
             routes = self.warehouse_id.route_ids
         elif self.picking_type_id and self.picking_type_id.warehouse_id:
             routes = self.picking_type_id.warehouse_id.route_ids
-        if len(routes) > 0:
-            flag = True
-            domain = [("route_id", "in", routes.ids)]
-        return [flag, domain, sequence]
+        dom = domain + [("route_id", "in", routes.ids)]
+        return obj_rule.search(dom)
