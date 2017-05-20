@@ -70,5 +70,7 @@ class StockMove(models.Model):
             routes = self.warehouse_id.route_ids
         elif self.picking_type_id and self.picking_type_id.warehouse_id:
             routes = self.picking_type_id.warehouse_id.route_ids
+        else:
+            routes = self.env["stock.location.route"]
         dom = domain + [("route_id", "in", routes.ids)]
         return obj_rule.search(dom)
