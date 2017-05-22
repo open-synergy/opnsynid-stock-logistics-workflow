@@ -2,7 +2,8 @@
 # Copyright 2017 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import models, fields, api
+from openerp import models, fields, api, _
+from openerp.exceptions import Warning as UserError
 
 
 class StockPickingTypePrintPolicy(models.Model):
@@ -23,9 +24,11 @@ class StockPickingTypePrintPolicy(models.Model):
                 ("act_window_id", "=", policy.type_id.window_action_id.id),
                 ("view_mode", "=", "form"),
             ]
-            policy.original_view_id = \
-                self.env["ir.actions.act_window.view"].search(
-                    criteria, limit=1)[0].view_id.id
+            act_window_view = self.env["ir.actions.act_window.view"].search(
+                criteria, limit=1)
+            if not act_window_view:
+                continue
+            policy.original_view_id = act_window_view[0].view_id.id
 
     name = fields.Char(
         string="Button Label",
@@ -101,6 +104,9 @@ class StockPickingTypePrintPolicy(models.Model):
     @api.multi
     def _prepare_view(self):
         self.ensure_one()
+        if not self.original_view_id:
+            strWarning = _("No Original View")
+            raise UserError(strWarning)
         view_name = self.report_id.name
         arch = """<data>
     <xpath expr=\"//field[@name='state']\" position=\"before\">
@@ -159,7 +165,7 @@ class StockPickingTypePrintPolicy(models.Model):
     def _prepare_group(self):
         self.ensure_one()
         if not self.group_ids.ids:
-            res = [(6, 0, self.group_ids.ids)]
+            res = False
         else:
             res = [(6, 0, self.group_ids.ids)]
         return res
