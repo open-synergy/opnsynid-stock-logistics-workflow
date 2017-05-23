@@ -24,3 +24,7 @@ class TestReloadView(TestBasePickingPrintPolicy):
         policy.action_reload_view()
 
         self.assertIsNotNone(policy.view_id)
+
+        policy.action_reload_view()
+
+        self.assertIsNotNone(policy.view_id)
