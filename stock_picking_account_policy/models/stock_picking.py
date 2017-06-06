@@ -26,6 +26,8 @@ class StockPicking(models.Model):
 
     @api.model
     def _button_policy(self, picking_type, button_type):
+        super(StockPicking, self)._button_policy(
+            picking_type, button_type)
         user = self.env.user
         group_ids = user.groups_id.ids
         button_group_ids = []
