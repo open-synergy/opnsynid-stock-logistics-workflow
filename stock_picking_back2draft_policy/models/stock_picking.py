@@ -22,12 +22,11 @@ class StockPicking(models.Model):
                 continue
 
             picking.back2draft_ok =\
-                self._button_policy(picking_type, 'back2draft_ok')
+                self._button_back2draft_policy(
+                    picking_type, 'back2draft_ok')
 
     @api.model
-    def _button_policy(self, picking_type, button_type):
-        super(StockPicking, self)._button_policy(
-            picking_type, button_type)
+    def _button_back2draft_policy(self, picking_type, button_type):
         user = self.env.user
         group_ids = user.groups_id.ids
         button_group_ids = []
