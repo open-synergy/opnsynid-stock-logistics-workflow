@@ -22,18 +22,20 @@ class StockPicking(models.Model):
                 continue
 
             picking.invoice_ok =\
-                self._button_policy(picking_type, 'invoice_ok')
+                self._button_picking_account_policy(
+                    picking_type, 'invoice_ok')
 
     @api.model
-    def _button_policy(self, picking_type, button_type):
-        super(StockPicking, self)._button_policy(
-            picking_type, button_type)
+    def _button_picking_account_policy(
+        self, picking_type, button_type
+    ):
         user = self.env.user
         group_ids = user.groups_id.ids
         button_group_ids = []
 
         if button_type == 'invoice_ok':
-            button_group_ids = picking_type.invoice_group_ids.ids
+            button_group_ids =\
+                picking_type.invoice_group_ids.ids
 
         if button_group_ids:
             if (set(button_group_ids) & set(group_ids)):
