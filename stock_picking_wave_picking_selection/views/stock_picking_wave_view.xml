@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="stock_picking_wave_view_form" model="ir.ui.view">
+            <field name="name">Inherit: Stock Picking Wave Picking Selection Form</field>
+            <field name="model">stock.picking.wave</field>
+            <field name="inherit_id" ref="stock_picking_wave.view_picking_wave_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='picking_ids']" position="before">
+                        <group name="group_1">
+                            <button 
+                                name="button_search_pickings"
+                                type="object"
+                                string="Search"
+                                icon="gtk-find"
+                                attrs="{'invisible': [('state', 'not in', ('draft', 'in_progress'))]}"
+                            />
+                        </group>
+                        <group name="group_2" colspan="4" col="2">
+                            <group name="group_2_1" colspan="1" col="2">
+                                <field name="scheduled_date_start" string="Schedule Date" attrs="{'invisible': [('state', 'not in', ('draft', 'in_progress'))]}"/>
+                                <field name="scheduled_date_end" attrs="{'invisible': [('state', 'not in', ('draft', 'in_progress'))]}"/>
+                            </group>
+                            <group name="group_2_2" colspan="1" col="2">
+                                <field name="creation_date_start" attrs="{'invisible': [('state', 'not in', ('draft', 'in_progress'))]}"/>
+                                <field name="creation_date_end" attrs="{'invisible': [('state', 'not in', ('draft', 'in_progress'))]}"/>
+                            </group>
+                        </group>
+                        <group name="group_3" colspan="4" col="2">
+                            <field name="delivery_address_ids" attrs="{'invisible': [('state', 'not in', ('draft', 'in_progress'))]}" widget="many2many_tags"/>
+                            <field name="picking_type_ids" attrs="{'invisible': [('state', 'not in', ('draft', 'in_progress'))]}" widget="many2many_tags"/>
+                        </group>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+    </data>
+</openerp>
