@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<record id="stock_picking_wave_type_view_form" model="ir.ui.view">
+    <field name="name">Stock Picking Wave Type</field>
+    <field name="model">stock.picking_wave_type</field>
+    <field name="inherit_id" ref="stock_picking_wave_type.stock_picking_wave_type_view_form"/>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//group[1]" position="after">
+                <group name="group_selection_policy" string="Picking Selection Policy" colspan="4" col="2">
+                    <field name="delivery_address_ids" widget="many2many_tags"/>
+                    <field name="creation_date_start_anchor"/>
+                    <field name="creation_date_start_offset" widget="float_time"/>
+                    <field name="creation_date_end_anchor"/>
+                    <field name="creation_date_end_offset" widget="float_time"/>
+                    <field name="scheduled_date_start_anchor"/>
+                    <field name="scheduled_date_start_offset" widget="float_time"/>
+                    <field name="scheduled_date_end_anchor"/>
+                    <field name="scheduled_date_end_offset" widget="float_time"/>
+                </group>
+            </xpath>
+        </data>
+    </field>
+</record>
+</data>
+</openerp>
