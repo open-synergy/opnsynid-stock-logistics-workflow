@@ -11,8 +11,14 @@
                             <field name="name" />
                             <field name="sequence_id" />
                             <field name="warehouse_id" />
-                            <field  name="allowed_picking_type_ids" />
                         </group>
+                        <notebook>
+                            <page name="page_allowed_picking_type" string="Allowed Picking Type" groups="base.group_system">
+                                <group name="grp_allowed_picking_type">
+                                    <field  name="allowed_picking_type_ids" nolabel="1"/>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
            </field>
