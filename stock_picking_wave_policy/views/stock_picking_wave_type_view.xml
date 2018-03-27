@@ -7,12 +7,14 @@
     <field name="inherit_id" ref="stock_picking_wave_type.stock_picking_wave_type_view_form"/>
     <field name="arch" type="xml">
         <data>
-            <xpath expr="/form/sheet/group[last()]" position="after">
-                <group name="grp_policy_picking_wave_type" string="Picking Wave Workflow Button Policy" colspan="4" col="2" groups="base.group_system">
-                    <field name="confirm_group_ids" widget="many2many_tags"/>
-                    <field name="done_group_ids" widget="many2many_tags"/>
-                    <field name="cancel_group_ids" widget="many2many_tags"/>
-                </group>
+            <xpath expr="//notebook" position="inside">
+                <page name="page_workflow_button_policy" string="Workflow Button Policy" groups="base.group_system">
+                    <group name="grp_workflow_button_policy">
+                        <field name="confirm_group_ids" widget="many2many_tags"/>
+                        <field name="done_group_ids" widget="many2many_tags"/>
+                        <field name="cancel_group_ids" widget="many2many_tags"/>
+                    </group>
+                </page>
             </xpath>
         </data>
     </field>
