@@ -2,7 +2,7 @@
 # Copyright 2017 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import models, api, fields
+from openerp import models, api, fields, SUPERUSER_ID
 
 
 class StockPicking(models.Model):
@@ -14,26 +14,36 @@ class StockPicking(models.Model):
     )
     def _compute_policy(self):
         super(StockPicking, self)._compute_policy()
-        obj_picking_type = self.env["stock.picking.type"]
+        user_id = self.env.user.id
         for picking in self:
-            picking.invoice_ok = False
-            picking_id = self.env.context.get("default_picking_type_id", False)
-            if not picking_id:
+            picking_type = picking.picking_type_id
+            if user_id == SUPERUSER_ID or not picking_type:
+                picking.invoice_ok = True
                 continue
-            picking_type = obj_picking_type.browse([picking_id])[0]
-            picking.invoice_ok = self._invoice_policy(picking_type)
+
+            picking.invoice_ok =\
+                self._button_picking_account_policy(
+                    picking_type, 'invoice_ok')
 
     @api.model
-    def _invoice_policy(self, picking_type):
-        result = False
+    def _button_picking_account_policy(
+        self, picking_type, button_type
+    ):
         user = self.env.user
-        invoice_group_ids = picking_type.invoice_group_ids.ids
         group_ids = user.groups_id.ids
-        if not picking_type.invoice_group_ids.ids:
-            result = True
-        else:
-            if (set(invoice_group_ids) & set(group_ids)):
+        button_group_ids = []
+
+        if button_type == 'invoice_ok':
+            button_group_ids =\
+                picking_type.invoice_group_ids.ids
+
+        if button_group_ids:
+            if (set(button_group_ids) & set(group_ids)):
                 result = True
+            else:
+                result = False
+        else:
+            result = True
         return result
 
     invoice_ok = fields.Boolean(
