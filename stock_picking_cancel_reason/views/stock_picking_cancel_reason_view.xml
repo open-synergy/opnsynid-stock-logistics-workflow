@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="stock_picking_cancel_reason_view_tree" model="ir.ui.view">
+            <field name="name">stock.picking.cancel.reason tree</field>
+            <field name="model">stock.picking.cancel.reason</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="description" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="stock_picking_cancel_reason_view_form" model="ir.ui.view">
+            <field name="name">stock.picking.cancel.reason form</field>
+            <field name="model">stock.picking.cancel.reason</field>
+            <field name="arch" type="xml">
+                <form string="Picking Cancellation Reason">
+                    <sheet>
+                        <group coslapn="4" col="2">
+                            <field name="name"/>
+                            <field name="description" />
+                            <field name="active" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="stock_picking_cancel_reason_action" model="ir.actions.act_window">
+            <field name="name">Stock Picking Cancellation Reason</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking.cancel.reason</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a Picking Cancellation Reason.
+              </p>
+            </field>
+        </record>
+
+        <menuitem
+            id="stock_picking_cancel_reason_menu"
+            name="Cancel Reasons"
+            parent="stock.menu_stock_configuration"
+            action="stock_picking_cancel_reason_action"
+            sequence="999"
+            />
+
+    </data>
+</openerp>
