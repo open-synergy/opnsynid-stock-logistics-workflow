@@ -14,22 +14,20 @@ class StockInventory(models.Model):
     )
     def _compute_policy(self):
         for inventory in self:
-            if self.env.user.id == SUPERUSER_ID:
-                inventory.validate_ok = inventory.restart_ok = \
-                    inventory.restart_ok = \
-                    inventory.start_ok = inventory.cancel_ok = True
-                continue
-
             if inventory.location_id:
                 location = inventory.location_id
                 for policy in location.\
                         _get_inventory_adjustment_button_policy_map():
+                    if self.env.user.id == SUPERUSER_ID:
+                        result = True
+                    else:
+                        result = location.\
+                            _get_inventory_adjustment_button_policy(
+                                policy[1])
                     setattr(
                         inventory,
                         policy[0],
-                        location.
-                        _get_inventory_adjustment_button_policy(
-                            policy[1]),
+                        result,
                     )
 
     start_ok = fields.Boolean(
