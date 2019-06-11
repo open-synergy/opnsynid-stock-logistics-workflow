@@ -1,2 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_stock_picking_type_print_policy,Stock Picking Type Print Policy,model_stock_picking_type_print_policy,,1,1,1,1
