@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2019 OpenSynergy Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<openerp>
+<data>
+<record id="base_workflow_stock_picking" model="base.workflow_policy">
+    <field name="model_id" ref="stock.model_stock_picking"/>
+</record>
+<record id="base_workflow_line_stock_picking_confirm" model="base.workflow_policy_line">
+    <field name="workflow_id" ref="stock_picking_policy.base_workflow_stock_picking"/>
+    <field name="field_id" search="[('model_id.model','=','stock.picking'),('name','=','confirm_ok')]"/>
+    <field name="python_code">result = document.picking_type_id.confirm_group_ids.ids</field>
+</record>
+<record id="base_workflow_line_stock_picking_force" model="base.workflow_policy_line">
+    <field name="workflow_id" ref="stock_picking_policy.base_workflow_stock_picking"/>
+    <field name="field_id" search="[('model_id.model','=','stock.picking'),('name','=','force_ok')]"/>
+    <field name="python_code">result = document.picking_type_id.force_group_ids.ids</field>
+</record>
+<record id="base_workflow_line_stock_picking_transfer" model="base.workflow_policy_line">
+    <field name="workflow_id" ref="stock_picking_policy.base_workflow_stock_picking"/>
+    <field name="field_id" search="[('model_id.model','=','stock.picking'),('name','=','transfer_ok')]"/>
+    <field name="python_code">result = document.picking_type_id.transfer_group_ids.ids</field>
+</record>
+<record id="base_workflow_line_stock_picking_return" model="base.workflow_policy_line">
+    <field name="workflow_id" ref="stock_picking_policy.base_workflow_stock_picking"/>
+    <field name="field_id" search="[('model_id.model','=','stock.picking'),('name','=','return_ok')]"/>
+    <field name="python_code">result = document.picking_type_id.return_group_ids.ids</field>
+</record>
+<record id="base_workflow_line_stock_picking_cancel" model="base.workflow_policy_line">
+    <field name="workflow_id" ref="stock_picking_policy.base_workflow_stock_picking"/>
+    <field name="field_id" search="[('model_id.model','=','stock.picking'),('name','=','cancel_ok')]"/>
+    <field name="python_code">result = document.picking_type_id.cancel_group_ids.ids</field>
+</record>
+<record id="base_workflow_line_stock_picking_unreserve" model="base.workflow_policy_line">
+    <field name="workflow_id" ref="stock_picking_policy.base_workflow_stock_picking"/>
+    <field name="field_id" search="[('model_id.model','=','stock.picking'),('name','=','unreserve_ok')]"/>
+    <field name="python_code">result = document.picking_type_id.unreserve_group_ids.ids</field>
+</record>
+</data>
+</openerp>
