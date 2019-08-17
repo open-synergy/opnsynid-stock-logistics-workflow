@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!-- Copyright 2019 OpenSynergy Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl-3.0) -->
+<openerp>
+<data>
+
+<record id="seq_type_fulfillment_service" model="ir.sequence.type">
+    <field name="name">Fulfillment Service</field>
+    <field name="code">fulfillment.service</field>
+</record>
+
+</data>
+
+<data noupdate="1">
+<record id="sequence_fulfillment_service" model="ir.sequence">
+    <field name="name">Fulfillment Service</field>
+    <field name="code">fulfillment.service</field>
+    <field name="padding">9</field>
+    <field name="prefix">FS/%(year)s/</field>
+    <field eval="1" name="number_next"/>
+    <field eval="1" name="number_increment"/>
+</record>
+</data>
+</openerp>

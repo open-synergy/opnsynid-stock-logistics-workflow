@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2019 OpenSynergy Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<openerp>
+<data>
+<record id="stock_fulfillment_service_view_form" model="ir.ui.view">
+    <field name="name">stock.fulfillment_service form</field>
+    <field name="model">stock.fulfillment_service</field>
+    <field name="arch" type="xml">
+        <form create="false" edit="false" delete="false">
+            <header/>
+            <group name="header" colspan="4" col="1">
+                <group name="header_1" colspan="1" col="2">
+                    <field name="name"/>
+                    <field name="quant_id"/>
+                    <field name="move_id"/>
+                    <field name="picking_id"/>
+                    <field name="partner_id"/>
+                    <field name="item_id"/>
+                </group>
+                <group name="header_2" colspan="1" col="2">
+                    <field name="currency_id"/>
+                    <field name="price_unit"/>
+                    <field name="quantity"/>
+                    <field name="uom_id"/>
+                    <field name="tax_ids" widget="many2many_tags"/>
+                    <field name="invoice_line_id"/>
+                </group>
+            </group>
+        </form>
+    </field>
+</record>
+
+<record id="stock_fulfillment_service_view_tree" model="ir.ui.view">
+    <field name="name">stock.fulfillment_service tree</field>
+    <field name="model">stock.fulfillment_service</field>
+    <field name="arch" type="xml">
+        <tree create="false" edit="false" delete="false">
+            <field name="name"/>
+            <field name="partner_id"/>
+            <field name="picking_id"/>
+            <field name="move_id"/>
+            <field name="quant_id"/>
+            <field name="item_id"/>
+            <field name="currency_id"/>
+            <field name="price_unit"/>
+            <field name="quantity"/>
+            <field name="uom_id"/>
+            <field name="tax_ids" widget="many2many_tags"/>
+            <field name="invoice_id"/>
+            <field name="invoice_line_id" invisible="1"/>
+        </tree>
+    </field>
+</record>
+
+<record id="stock_fulfillment_service_view_search" model="ir.ui.view">
+    <field name="name">stock.fulfillment_service search</field>
+    <field name="model">stock.fulfillment_service</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <field name="move_id"/>
+            <field name="quant_id"/>
+            <field name="partner_id"/>
+            <field name="item_id"/>
+            <field name="currency_id"/>
+            <field name="picking_id"/>
+            <filter name="dom_invoiceable" string="Invoiceable" domain="[('invoice_line_id','=',False)]"/>
+            <filter name="dom_invoiced" string="Invoiced" domain="[('invoice_line_id','!=',False)]"/>
+            <group name="groupby" string="Group By..">
+                <filter name="grp_move" string="Stock Move" context="{'group_by':'move_id'}"/>
+                <filter name="grp_picking" string="# Picking" context="{'group_by':'picking_id'}"/>
+                <filter name="grp_quant" string="Quant" context="{'group_by':'quant_id'}"/>
+                <filter name="grp_partner" string="Partner" context="{'group_by':'partner_id'}"/>
+                <filter name="grp_item" string="Processing Item" context="{'group_by':'item_id'}"/>
+                <filter name="grp_currency" string="Currency" context="{'group_by':'currency_id'}"/>
+            </group>
+        </search>
+    </field>
+</record>
+
+<record id="stock_fulfillment_service_action" model="ir.actions.act_window">
+    <field name="name">Fulfillment Services</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">stock.fulfillment_service</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+    <field name="search_view_id" ref="stock_fulfillment_service_view_search"/>
+</record>
+
+<menuitem
+    id="stock_fulfillment_service_menu"
+    name="Fulfillment Service"
+    parent="stock.menu_traceability"
+    action="stock_fulfillment_service_action"
+    sequence="10"
+    />
+
+</data>
+</openerp>

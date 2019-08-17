@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2019 OpenSynergy Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<openerp>
+<data>
+<record id="stock_fulfillment_item_view_form" model="ir.ui.view">
+    <field name="name">stock.fulfillment_item form</field>
+    <field name="model">stock.fulfillment_item</field>
+    <field name="arch" type="xml">
+        <form>
+            <header/>
+            <group name="header" colspan="4" col="2">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="applicable_on"/>
+                <field name="sequence_id"/>
+                <field name="active"/>
+            </group>
+            <notebook>
+                <page name="quantity_computation" string="Quantity Computation Code">
+                    <field name="quantity_computation_code"/>
+                </page>
+                <page name="uom_computation" string="UoM Computation Code">
+                    <field name="uom_computation_code"/>
+                </page>
+                <page name="note" string="Note">
+                    <field name="note"/>
+                </page>
+            </notebook>
+        </form>
+    </field>
+</record>
+
+<record id="stock_fulfillment_item_view_tree" model="ir.ui.view">
+    <field name="name">stock.fulfillment_item tree</field>
+    <field name="model">stock.fulfillment_item</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="product_id"/>
+            <field name="applicable_on"/>
+        </tree>
+    </field>
+</record>
+
+<record id="stock_fulfillment_item_action" model="ir.actions.act_window">
+    <field name="name">Fulfillment Items</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">stock.fulfillment_item</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+</record>
+
+<menuitem
+    id="stock_fulfillment_item_menu"
+    name="Fulfillment Item"
+    parent="stock.menu_stock_configuration"
+    action="stock_fulfillment_item_action"
+    sequence="10"
+    />
+
+</data>
+</openerp>

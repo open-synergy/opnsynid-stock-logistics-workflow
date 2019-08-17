@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+stock_fulfillment_service_employee,stock.fulfillment_service - employee,model_stock_fulfillment_service,base.group_user,1,1,1,1
+stock_fulfillment_service_all,stock.fulfillment_service - all,model_stock_fulfillment_service,,1,0,0,0
+stock_fulfillment_item_employee,stock.fulfillment_item - employee,model_stock_fulfillment_item,base.group_user,1,1,1,1
+stock_fulfillment_item_all,stock.fulfillment_item - all,model_stock_fulfillment_item,,1,0,0,0
+stock_picking_type_fulfillment_item_employee,stock.picking_type_fulfillment_item - employee,model_stock_picking_type_fulfillment_item,base.group_user,1,1,1,1
+stock_picking_type_fulfillment_item_all,stock.picking_type_fulfillment_item - all,model_stock_picking_type_fulfillment_item,,1,0,0,0
