@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<!-- Copyright 2021 OpenSynergy Indonesia
+     Copyright 2021 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <data>
+        <record id="stock_picking_view_form" model="ir.ui.view">
+            <field name="name">stock.picking.form.backdating</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form" />
+            <field name="arch" type="xml">
+                <xpath
+                    expr="//notebook/page[2]/field[@name='move_ids_without_package']/tree/field[@name='product_id']"
+                    position="after"
+                >
+                    <field name="date_backdating" />
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
