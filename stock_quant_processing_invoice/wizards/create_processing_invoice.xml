@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2019 OpenSynergy Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<openerp>
+<data>
+<record id="stock_create_processing_invoice_view_form" model="ir.ui.view">
+    <field name="name">stock.create_processing_invoice form</field>
+    <field name="model">stock.create_processing_invoice</field>
+    <field name="arch" type="xml">
+        <form>
+            <group name="header" colspan="4" col="2">
+                <field name="date_invoice"/>
+                <field name="currency_id"/>
+                <field name="allowed_journal_ids" widget="many2many_tags" invisible="1"/>
+                <field name="journal_id" domain="[('id','in',allowed_journal_ids[0][2])]"/>
+                <field name="processing_item_ids" invisible="1"/>
+            </group>
+            <footer>
+                <button name="action_create_invoice" string="Create Invoice" type="object" class="oe_highlight"/>
+                Or
+                <button special="cancel" string="Cancel"/>
+            </footer>
+        </form>
+    </field>
+</record>
+
+<record id="stock_create_processing_invoice_action" model="ir.actions.act_window">
+    <field name="name">Create Processing Invoice</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">stock.create_processing_invoice</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+</record>
+
+<record id="stock_create_processing_invoice_values" model="ir.values">
+    <field name="model_id" ref="model_stock_move_processing_invoice" />
+    <field name="name">Create Processing Invoice</field>
+    <field name="key2">client_action_multi</field>
+    <field name="value" eval="'ir.actions.act_window,' + str(ref('stock_create_processing_invoice_action'))"/>
+    <field name="key">action</field>
+    <field name="model">stock.move_processing_invoice</field>
+</record>
+
+</data>
+</openerp>
