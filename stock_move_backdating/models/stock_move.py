@@ -30,5 +30,15 @@ class StockMove(models.Model):
         _super = super(StockMove, self)
         result = _super._action_done()
         for move in self:
-            move.write({"date": move.date_backdating})
+            if move.date_backdating:
+                move.write({"date": move.date_backdating})
         return result
+
+    @api.multi
+    def _account_entry_move(self):
+        context = self._context.copy()
+        ctx = {
+            "force_period_date": self.date_backdating,
+        }
+        context.update(ctx)
+        return super(StockMove, self.with_context(context))._account_entry_move()
