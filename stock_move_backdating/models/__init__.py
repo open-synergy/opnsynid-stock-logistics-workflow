@@ -8,5 +8,4 @@
 from . import (
     stock_move,
     stock_picking,
-    account_move,
 )
