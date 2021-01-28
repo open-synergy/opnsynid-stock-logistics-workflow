@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
-# Copyright 2017 OpenSynergy Indonesia
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+# Copyright 2021 OpenSynergy Indonesia
+# Copyright 2021 PT. Simetri Sinergi Indonesia
+# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from openerp import models, api, fields
+from openerp import api, fields, models
 
 
 class StockInventory(models.Model):
@@ -13,15 +13,11 @@ class StockInventory(models.Model):
     )
 
     @api.model
-    def post_inventory(self, inv):
-        ctx = {}
-        if inv.backdate:
-            ctx = {"move_date": inv.backdate}
-        _super = super(StockInventory, self.with_context(ctx))
-        _super.post_inventory(inv)
-
-        if inv.backdate:
-            for move in inv.move_ids:
-                move.date = inv.backdate
-                if move.quant_ids:
-                    move.quant_ids.sudo().write({"in_date": inv.backdate})
+    def post_inventory(self):
+        context = self._context.copy()
+        if self.backdate:
+            ctx = {
+                "force_period_date": self.backdate,
+            }
+            context.update(ctx)
+        return super(StockInventory, self.with_context(context)).post_inventory()
