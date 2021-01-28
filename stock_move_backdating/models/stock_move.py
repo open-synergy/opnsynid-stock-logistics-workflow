@@ -37,8 +37,9 @@ class StockMove(models.Model):
     @api.multi
     def _account_entry_move(self):
         context = self._context.copy()
-        ctx = {
-            "force_period_date": self.date_backdating,
-        }
-        context.update(ctx)
+        if self.date_backdating:
+            ctx = {
+                "force_period_date": self.date_backdating,
+            }
+            context.update(ctx)
         return super(StockMove, self.with_context(context))._account_entry_move()
