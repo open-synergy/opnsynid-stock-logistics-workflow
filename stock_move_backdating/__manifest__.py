@@ -7,7 +7,7 @@
 # pylint: disable=locally-disabled, manifest-required-author
 {
     "name": "Stock Move Backdating",
-    "version": "12.0.1.0.1",
+    "version": "12.0.1.1.1",
     "category": "Stock Logistics",
     "author": "Marco Dieckhoff, BREMSKERL, Agile Business Group, "
     "Odoo Community Association (OCA), "
