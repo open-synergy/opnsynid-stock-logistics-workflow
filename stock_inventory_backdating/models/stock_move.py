@@ -16,6 +16,6 @@ class StockMove(models.Model):
         _super = super(StockMove, self)
         result = _super._action_done()
         for move in self:
-            if self.inventory_id.backdate:
-                move.write({"date": self.inventory_id.backdate})
+            if move.inventory_id.backdate:
+                move.write({"date": move.inventory_id.backdate})
         return result
