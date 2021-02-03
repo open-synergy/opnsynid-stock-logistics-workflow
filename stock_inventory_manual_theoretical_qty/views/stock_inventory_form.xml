@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2021 OpenSynergy Indonesia
+     Copyright 2021 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html). -->
+<openerp>
+<data>
+<record id="stock_inventory_view_form" model="ir.ui.view">
+    <field name="name">stock.inventory.manual.theoretical.qty.form</field>
+    <field name="model">stock.inventory</field>
+    <field name="inherit_id" ref="stock.view_inventory_form"/>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//field[@name='theoretical_qty']" position="before">
+                <field name="theoretical_qty_method"/>
+                <field name="manual_theoretical_qty"/>
+            </xpath>
+        </data>
+    </field>
+</record>
+</data>
+</openerp>
