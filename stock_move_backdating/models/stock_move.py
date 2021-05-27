@@ -29,9 +29,25 @@ class StockMove(models.Model):
     def _action_done(self):
         _super = super(StockMove, self)
         result = _super._action_done()
+        obj_stock_quant = self.env["stock.quant"]
         for move in self:
             if move.date_backdating:
                 move.write({"date": move.date_backdating})
+                for move_line in move.move_line_ids:
+                    move_line.write(
+                        {
+                            "date": move.date_backdating,
+                        }
+                    )
+                    obj_stock_quant._update_available_quantity(
+                        product_id=move_line.product_id,
+                        location_id=move_line.location_id,
+                        quantity=move_line.product_qty,
+                        lot_id=move_line.lot_id,
+                        package_id=move_line.package_id,
+                        owner_id=move_line.owner_id,
+                        in_date=move.date_backdating,
+                    )
         return result
 
     @api.multi
