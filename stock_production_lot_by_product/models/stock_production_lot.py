@@ -3,10 +3,15 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from openerp import models, fields, api
+from openerp.exceptions import Warning as UserError
 
 
 class StockProductionLot(models.Model):
-    _inherit = "stock.production.lot"
+    _name = "stock.production.lot"
+    _inherit = [
+        "stock.production.lot",
+        "base.sequence_document",
+        ]
 
     @api.model
     def _default_name(self):
@@ -21,24 +26,17 @@ class StockProductionLot(models.Model):
 
     @api.model
     def create(self, values):
-        product_id = values["product_id"]
-        if values["name"] == "/":
-            values["name"] = self._create_sequence(product_id)
         _super = super(StockProductionLot, self)
-        return _super.create(values)
-
-    @api.model
-    def _create_sequence(self, product_id):
-        sequence = self._get_sequence(product_id)
-        name = self.env["ir.sequence"].\
-            next_by_id(sequence.id)
-        return name
-
-    @api.model
-    def _get_sequence(self, product_id):
-        obj_product = self.env["product.product"]
-        product = obj_product.browse([product_id])[0]
-        if product.lot_sequence_id:
-            return product.lot_sequence_id
-        else:
-            return self.env.ref("stock.sequence_production_lots")
+        result = _super.create(values)
+        ctx = self.env.context.copy()
+        date_sequence = self.env.context.get("date_sequence", fields.Date.today())
+        ctx.update(
+            {
+                "ir_sequence_date": date_sequence,
+            }
+        )
+        sequence = result.with_context(ctx)._create_sequence()
+        result.write({
+            "name": sequence,
+        })
+        return result

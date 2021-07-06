@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2020 OpenSynergy Indonesia
+     Copyright 2020 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<openerp>
+    <data noupdate="1">
+        <record id="base_sequence_prod_lot" model="base.sequence_configurator">
+            <field name="model_id" ref="stock.model_stock_production_lot"/>
+            <field name="sequence_field_id" search="[('model_id.model','=','stock.production.lot'),('name','=','name')]"/>
+            <field name="fallback_sequence_id" ref="stock_production_lot_by_product.sequence_prod_lot"/>
+        </record>
+
+        <record id="base_sequence_prod_lot" model="base.sequence_configurator_line">
+            <field name="generator_id" ref="base_sequence_prod_lot"/>
+            <field name="sequence" eval="1"/>
+            <field name="sequence_computation_code">result = document.product_id.categ_id.lot_sequence_id or document.product_id.lot_sequence_id</field>
+        </record>
+    </data>
+</openerp>
