@@ -12,7 +12,7 @@ class StockTransferDetails(models.TransientModel):
     def button_generate_lot(self):
         self.ensure_one()
         for detail in self.item_ids:
-            detail._generate_lot()
+            detail.with_context({"date_sequence": detail.date})._generate_lot()
         return self.wizard_view()
 
 
