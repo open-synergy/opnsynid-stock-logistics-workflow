@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2022 OpenSynergy Indonesia
+     Copyright 2022 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<openerp>
+<data>
+<record id="stock_location_rent_type_view_search" model="ir.ui.view">
+    <field name="name">stock.location.rent.type.search</field>
+    <field name="model">stock.location_rent_type</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="code" />
+            <field name="name" />
+        </search>
+    </field>
+</record>
+
+<record id="stock_location_rent_type_view_tree" model="ir.ui.view">
+    <field name="name">stock.location.rent.type.tree</field>
+    <field name="model">stock.location_rent_type</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="code" />
+            <field name="name" />
+        </tree>
+    </field>
+</record>
+
+<record id="stock_location_rent_type_view_form" model="ir.ui.view">
+    <field name="name">stock.location.rent.type.form</field>
+    <field name="model">stock.location_rent_type</field>
+    <field name="arch" type="xml">
+        <form>
+            <header />
+            <sheet>
+                <div
+                    class="oe_right oe_button_box"
+                    style="width: 300px;"
+                    name="buttons"
+                />
+                <group name="group_1" colspan="4" col="2">
+                    <field name="code" />
+                    <field name="name" />
+                    <field name="active" />
+                    <field name="sequence_id" domain="[('code','=','location_rent')]" />
+                </group>
+                <notebook>
+                    <page name="page_allowed_location" string="Allowed Locations">
+                        <group name="group_allowed_location" colspan="4" col="2">
+                            <field name="allowed_location_ids" nolabel="1" />
+                        </group>
+                    </page>
+                    <page name="page_allowed_pricelist" string="Allowed Pricelist">
+                        <group name="group_allowed_pricelist" colspan="4" col="2">
+                            <field name="allowed_yearly_pricelist_ids" widget="many2many_tags" />
+                            <field name="allowed_monthly_pricelist_ids" widget="many2many_tags" />
+                            <field name="allowed_daily_pricelist_ids" widget="many2many_tags" />
+                        </group>
+                    </page>
+                    <page name="workflow_policy" string="Workflow Policy">
+                        <group name="workflow_policy_1" colspan="4" col="2">
+                            <field name="confirm_grp_ids" widget="many2many_tags" />
+                            <field name="finish_grp_ids" widget="many2many_tags" />
+                            <field name="terminate_grp_ids" widget="many2many_tags" />
+                            <field name="cancel_grp_ids" widget="many2many_tags" />
+                            <field name="restart_grp_ids" widget="many2many_tags" />
+                            <field name="restart_validation_grp_ids" widget="many2many_tags" />
+                        </group>
+                    </page>
+                    <page name="note" string="Note">
+                        <field name="note" />
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+<record id="stock_location_rent_type_action" model="ir.actions.act_window">
+    <field name="name">Location Rent Types</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">stock.location_rent_type</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+</record>
+
+<menuitem
+    id="stock_location_rent_type_menu"
+    name="Location Rent Types"
+    parent="stock.menu_stock_configuration"
+    action="stock_location_rent_type_action"
+    sequence="10"
+/>
+</data>
+</openerp>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2022 OpenSynergy Indonesia
+     Copyright 2022 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<openerp>
+<data>
+<record id="stock_location_rent_payment_term_detail_view_tree" model="ir.ui.view">
+    <field name="name">stock.location.rent.payment.rent.detail.tree</field>
+    <field name="model">stock.location_rent_payment_term_detail</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="payment_term_id" />
+            <field name="date_start" />
+            <field name="date_end" />
+            <field name="product_id" />
+            <field name="price_unit" />
+            <field name="amount_before_tax" />
+            <field name="amount_tax" />
+            <field name="amount_after_tax" />
+        </tree>
+    </field>
+</record>
+
+<record id="stock_location_rent_payment_term_detail_view_form" model="ir.ui.view">
+    <field name="name">stock.location.rent.payment.rent.detail.form</field>
+    <field name="model">stock.location_rent_payment_term_detail</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <div
+                class="oe_right oe_button_box"
+                style="width: 300px;"
+                name="buttons"
+            >
+            </div>
+            <group name="group_1" colspan="4" col="2">
+                <group name="group_1_1" colspan="1" col="2">
+                    <field name="payment_term_id" />
+                    <field name="product_id" />
+                    <field name="price_unit" />
+                </group>
+                <group name="group_1_2">
+                    <field name="date_start" />
+                    <field name="date_end" />
+                </group>
+            </group>
+            <group class="oe_subtotal_footer oe_right" colspan="2" name="footer">
+                <field name="amount_before_tax" widget='monetary'/>
+                <field name="amount_tax" widget='monetary'/>
+                <field name="amount_after_tax" widget='monetary'/>
+            </group>
+        </form>
+    </field>
+</record>
+</data>
+</openerp>
