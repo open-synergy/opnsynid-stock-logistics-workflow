@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2022 OpenSynergy Indonesia
+     Copyright 2022 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<openerp>
+<data>
+<record id="base_workflow_stock_location_rent" model="base.workflow_policy">
+    <field name="model_id" ref="stock_location_rent.model_stock_location_rent" />
+</record>
+<record id="base_workflow_line_stock_location_rent_confirm" model="base.workflow_policy_line">
+    <field name="workflow_id" ref="base_workflow_stock_location_rent" />
+    <field
+                name="field_id"
+                search="[('model_id.model','=','stock.location_rent'),('name','=','confirm_ok')]"
+            />
+    <field
+                name="python_code"
+            >result = document.type_id.confirm_grp_ids.ids</field>
+</record>
+<record id="base_workflow_line_stock_location_rent_finish" model="base.workflow_policy_line">
+    <field name="workflow_id" ref="base_workflow_stock_location_rent" />
+    <field
+                name="field_id"
+                search="[('model_id.model','=','stock.location_rent'),('name','=','finish_ok')]"
+            />
+    <field
+                name="python_code"
+            >result = document.type_id.finish_grp_ids.ids</field>
+</record>
+<record id="base_workflow_line_stock_location_rent_terminate" model="base.workflow_policy_line">
+    <field name="workflow_id" ref="base_workflow_stock_location_rent" />
+    <field
+                name="field_id"
+                search="[('model_id.model','=','stock.location_rent'),('name','=','terminate_ok')]"
+            />
+    <field
+                name="python_code"
+            >result = document.type_id.terminate_grp_ids.ids</field>
+</record>
+<record id="base_workflow_line_stock_location_rent_cancel" model="base.workflow_policy_line">
+    <field name="workflow_id" ref="base_workflow_stock_location_rent" />
+    <field
+                name="field_id"
+                search="[('model_id.model','=','stock.location_rent'),('name','=','cancel_ok')]"
+            />
+    <field
+                name="python_code"
+            >result = document.type_id.cancel_grp_ids.ids</field>
+</record>
+<record id="base_workflow_line_stock_location_rent_restart" model="base.workflow_policy_line">
+    <field name="workflow_id" ref="base_workflow_stock_location_rent" />
+    <field
+                name="field_id"
+                search="[('model_id.model','=','stock.location_rent'),('name','=','restart_ok')]"
+            />
+    <field
+                name="python_code"
+            >result = document.type_id.restart_grp_ids.ids</field>
+</record>
+<record id="base_workflow_line_stock_location_rent_restart_validation" model="base.workflow_policy_line">
+    <field name="workflow_id" ref="base_workflow_stock_location_rent" />
+    <field
+                name="field_id"
+                search="[('model_id.model','=','stock.location_rent'),('name','=','restart_validation_ok')]"
+            />
+    <field
+                name="python_code"
+            >result = document.type_id.restart_validation_grp_ids.ids</field>
+</record>
+
+
+</data>
+</openerp>

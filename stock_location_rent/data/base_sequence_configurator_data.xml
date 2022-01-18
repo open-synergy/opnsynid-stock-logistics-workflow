@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2022 OpenSynergy Indonesia
+     Copyright 2022 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<openerp>
+<data>
+<record id="base_sequence_stock_location_rent" model="base.sequence_configurator">
+    <field name="model_id" ref="stock_location_rent.model_stock_location_rent" />
+    <field
+                name="sequence_field_id"
+                search="[('model_id.model','=','stock.location_rent'),('name','=','name')]"
+            />
+    <field name="fallback_sequence_id" ref="stock_location_rent.sequence_stock_location_rent" />
+</record>
+
+<record id="base_sequence_stock_location_rent_line" model="base.sequence_configurator_line">
+    <field name="generator_id" ref="base_sequence_stock_location_rent" />
+    <field name="sequence" eval="1" />
+    <field
+                name="sequence_computation_code"
+            >result = document.type_id.sequence_id</field>
+</record>
+</data>
+</openerp>
