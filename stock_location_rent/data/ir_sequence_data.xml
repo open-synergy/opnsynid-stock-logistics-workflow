@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<!-- Copyright 2022 OpenSynergy Indonesia
+     Copyright 2022 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl-3.0) -->
+<openerp>
+<data>
+
+<record id="seq_type_stock_location_rent" model="ir.sequence.type">
+    <field name="name">Stock Location Rent</field>
+    <field name="code">location_rent</field>
+</record>
+
+</data>
+
+<data noupdate="1">
+<record id="sequence_stock_location_rent" model="ir.sequence">
+    <field name="name">Stock Location Rent</field>
+    <field name="code">location_rent</field>
+    <field name="padding">6</field>
+    <field name="prefix">LOC-RENT/%(year)s/</field>
+    <field eval="1" name="number_next" />
+    <field eval="1" name="number_increment" />
+</record>
+</data>
+</openerp>

@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+stock_location_rent_type_user,stock.location_rent_type - user,model_stock_location_rent_type,base.group_user,1,1,1,1
+stock_location_rent_type_all,stock.location_rent_type – all,model_stock_location_rent_type,,1,0,0,0
+stock_location_rent_detail_user,stock.location_rent_detail - user,model_stock_location_rent_detail,base.group_user,1,1,1,1
+stock_location_rent_detail_all,stock.location_rent_detail – all,model_stock_location_rent_detail,,1,0,0,0
+stock_location_rent_payment_term_user,stock.location_rent_payment_term - user,model_stock_location_rent_payment_term,base.group_user,1,1,1,1
+stock_location_rent_payment_term_all,stock.location_rent_payment_term – all,model_stock_location_rent_payment_term,,1,0,0,0
+stock_location_rent_user,stock.location_rent - user,model_stock_location_rent,base.group_user,1,1,1,1
+stock_location_rent_all,stock.location_rent – all,model_stock_location_rent,,1,0,0,0

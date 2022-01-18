@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2022 OpenSynergy Indonesia
+     Copyright 2022 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<openerp>
+<data>
+<record id="stock_location_rent_detail_view_tree" model="ir.ui.view">
+    <field name="name">stock.location.rent.detail.tree</field>
+    <field name="model">stock.location_rent_detail</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="location_id" />
+            <field name="account_id" />
+            <field name="invoice_method" />
+            <field name="pricelist_id" />
+            <field name="price_unit" />
+            <field name="amount_before_tax" />
+            <field name="amount_tax" />
+            <field name="amount_after_tax" />
+        </tree>
+    </field>
+</record>
+
+<record id="stock_location_rent_detail_view_form" model="ir.ui.view">
+    <field name="name">stock.location.rent.detail.form</field>
+    <field name="model">stock.location_rent_detail</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <div
+                class="oe_right oe_button_box"
+                style="width: 300px;"
+                name="buttons"
+            >
+            </div>
+            <group name="group_1" colspan="4" col="2">
+                <group name="group_1_1" colspan="1" col="2">
+                    <field name="rent_id" invisible="1"/>
+                    <field
+                        name="allowed_location_ids"
+                        widget="many2many_tags"
+                        invisible="1"
+                    />
+                    <field
+                        name="location_id"
+                        domain="[('id','in',allowed_location_ids[0][2])]"
+                    />
+                    <field name="account_id" />
+                    <field name="invoice_method" />
+                </group>
+                <group name="group_1_2">
+                    <field name="pricelist_id" />
+                    <field name="tax_ids" widget="many2many_tags"/>
+                    <field name="price_unit" />
+                </group>
+            </group>
+            <group class="oe_subtotal_footer oe_right" colspan="2" name="footer">
+                <field name="amount_before_tax" widget='monetary' options="{'currency_field': 'parent_id.currency_id'}"/>
+                <field name="amount_tax" widget='monetary' options="{'currency_field': 'parent_id.currency_id'}"/>
+                <field name="amount_after_tax" widget='monetary' options="{'currency_field': 'parent_id.currency_id'}"/>
+            </group>
+        </form>
+    </field>
+</record>
+</data>
+</openerp>

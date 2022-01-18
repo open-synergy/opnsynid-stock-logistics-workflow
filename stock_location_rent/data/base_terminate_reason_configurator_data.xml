@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2022 OpenSynergy Indonesia
+     Copyright 2022 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<openerp>
+    <data>
+        <record
+            id="base_terminate_reason_config_stock_location_rent"
+            model="base.terminate.reason_config"
+        >
+            <field name="name" ref="stock_location_rent.model_stock_location_rent" />
+            <field name="method_terminate_name">action_terminate</field>
+        </record>
+    </data>
+</openerp>
