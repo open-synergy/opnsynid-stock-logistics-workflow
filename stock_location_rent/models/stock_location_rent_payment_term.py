@@ -3,7 +3,8 @@
 # Copyright 2022 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import api, fields, models
+from openerp import api, fields, models, _
+from openerp.exceptions import Warning as UserError
 
 
 class StockLocationRentPaymentTerm(models.Model):
@@ -38,37 +39,6 @@ class StockLocationRentPaymentTerm(models.Model):
         readonly=True,
         ondelete="restrict",
     )
-    detail_ids = fields.One2many(
-        string="Details",
-        comodel_name="stock.location_rent_payment_term_detail",
-        inverse_name="payment_term_id",
-    )
-    @api.depends(
-        "detail_ids.price_unit",
-        "detail_ids.tax_ids",
-    )
-    @api.multi
-    def _compute_amount(self):
-        for document in self:
-            document.amount_before_tax = 0.0
-            document.amount_tax = 0.0
-            document.amount_after_tax = 0.0
-
-    amount_before_tax = fields.Float(
-        string="Amount Before Tax",
-        compute="_compute_amount",
-        store=True,
-    )
-    amount_tax = fields.Float(
-        string="Amount Tax",
-        compute="_compute_amount",
-        store=True,
-    )
-    amount_after_tax = fields.Float(
-        string="Amount After Tax",
-        compute="_compute_amount",
-        store=True,
-    )
 
     @api.depends(
         "invoice_id",
@@ -78,11 +48,15 @@ class StockLocationRentPaymentTerm(models.Model):
         for record in self:
             if record.rent_id.state in ["draft", "confirm"]:
                 state = "draft"
-            elif record.rent_id.state in ["start", "finish", "terminate"]:
+            elif record.rent_id.state == "start":
                 if record.invoice_id:
                     state = "invoiced"
                 else:
                     state = "uninvoiced"
+            elif record.rent_id.state == "finish":
+                state = "finished"
+            elif record.rent_id.state == "terminated":
+                state = "terminated"
             else:
                 state = "cancelled"
             record.state = state
@@ -94,6 +68,8 @@ class StockLocationRentPaymentTerm(models.Model):
             ("uninvoiced", "Uninvoiced"),
             ("invoiced", "Invoiced"),
             ("cancelled", "Cancelled"),
+            ("terminated", "Terminated"),
+            ("finished", "Finished"),
         ],
         compute="_compute_state",
         store=True,
@@ -111,42 +87,42 @@ class StockLocationRentPaymentTerm(models.Model):
 
     @api.multi
     def _create_invoice(self):
-        # self.ensure_one()
-        # invoice = self.env["account.invoice"].create(self._prepare_invoice_data())
-        # self.write(
-        #     {
-        #         "invoice_id": invoice.id,
-        #     }
-        # )
-        # for detail in self.detail_ids:
-        #     detail._create_invoice_line()
-        # invoice.button_reset_taxes()
+        self.ensure_one()
+        rent = self.rent_id
+        obj_account_invoice = self.env["account.invoice"]
+        invoice = obj_account_invoice.create(self._prepare_invoice_data())
+        self.write({
+            "invoice_id": invoice.id,
+        })
+        for detail in rent.detail_ids:
+            detail._create_invoice_line(invoice)
+        invoice.button_reset_taxes()
         return True
 
-    # @api.multi
-    # def _prepare_invoice_data(self):
-    #     self.ensure_one()
-    #     contract = self.contract_id
-    #     partner = contract.partner_invoice_id or contract.partner_id
-    #     return {
-    #         "partner_id": partner.id,
-    #         "date_invoice": False,  # TODO
-    #         "journal_id": journal.id,
-    #         "account_id": account.id,
-    #         "currency_id": contract.currency_id.id,
-    #         "origin": contract.name,
-    #         "name": contract.title,
-    #     }
+    @api.multi
+    def _prepare_invoice_data(self):
+        self.ensure_one()
+        rent = self.rent_id
+        partner = rent.partner_invoice_id or rent.partner_id
+        return {
+            "partner_id": partner.id,
+            "date_invoice": self.date_invoice,
+            "date_due": self.date_due,
+            "journal_id": rent.receivable_journal_id.id,
+            "account_id": rent.receivable_account_id.id,
+            "currency_id": rent.currency_id.id,
+            "origin": rent.name,
+            "name": "Rental",
+        }
 
     @api.multi
     def _delete_invoice(self):
-        # self.ensure_one()
-        # invoice = self.invoice_id
-        # self.detail_ids.write({"invoice_line_id": False})
-        # self.write(
-        #     {
-        #         "invoice_id": False,
-        #     }
-        # )
-        # invoice.unlink()
+        self.ensure_one()
+        invoice = self.invoice_id
+        if invoice.state == "draft":
+            self.write({"invoice_id": False})
+            invoice.unlink()
+        else:
+            msg_err = _("Only invoice with draft state can be deleted")
+            raise UserError(msg_err)
         return True

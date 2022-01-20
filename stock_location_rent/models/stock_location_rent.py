@@ -139,50 +139,23 @@ class StockLocationRent(models.Model):
             ],
         },
     )
-    allowed_location_ids = fields.Many2many(
-        string="Allowed Location",
-        comodel_name="stock.location",
-        related="type_id.allowed_location_ids",
+
+    @api.multi
+    @api.depends(
+        "partner_id",
     )
-    allowed_yearly_pricelist_ids = fields.Many2many(
-        string="Allowed Yearly Pricelist",
+    def _compute_allowed_pricelist_ids(self):
+        for document in self:
+            document.allowed_pricelist_ids = []
+
+    allowed_pricelist_ids = fields.Many2many(
+        string="Allowed Pricelist",
         comodel_name="product.pricelist",
-        related="type_id.allowed_yearly_pricelist_ids",
+        compute="_compute_allowed_pricelist_ids",
+        store=False,
     )
-    allowed_monthly_pricelist_ids = fields.Many2many(
-        string="Allowed Monthly Pricelist",
-        comodel_name="product.pricelist",
-        related="type_id.allowed_monthly_pricelist_ids",
-    )
-    allowed_daily_pricelist_ids = fields.Many2many(
-        string="Allowed Daily Pricelist",
-        comodel_name="product.pricelist",
-        related="type_id.allowed_daily_pricelist_ids",
-    )
-    yearly_pricelist_id = fields.Many2one(
-        string="Yearly Pricelist",
-        comodel_name="product.pricelist",
-        required=True,
-        readonly=True,
-        states={
-            "draft": [
-                ("readonly", False),
-            ],
-        },
-    )
-    monthly_pricelist_id = fields.Many2one(
-        string="Monthly Pricelist",
-        comodel_name="product.pricelist",
-        required=True,
-        readonly=True,
-        states={
-            "draft": [
-                ("readonly", False),
-            ],
-        },
-    )
-    daily_pricelist_id = fields.Many2one(
-        string="Daily Pricelist",
+    pricelist_id = fields.Many2one(
+        string="Pricelist",
         comodel_name="product.pricelist",
         required=True,
         readonly=True,
@@ -223,9 +196,10 @@ class StockLocationRent(models.Model):
             if document.date_start and document.date_end:
                 start = datetime.strptime(document.date_start, "%Y-%m-%d")
                 end = datetime.strptime(document.date_end, "%Y-%m-%d")
-                document.yearly_period = relativedelta(end, start).years
-                document.monthly_period = relativedelta(end, start).months
-                document.daily_period = relativedelta(end, start).days
+                delta_date = relativedelta(end, start)
+                document.yearly_period = delta_date.years
+                document.monthly_period = delta_date.months
+                document.daily_period = delta_date.days
 
     yearly_period = fields.Integer(
         string="Yearly Period",
@@ -242,11 +216,197 @@ class StockLocationRent(models.Model):
         compute="_compute_period",
         store=True,
     )
+
+    @api.multi
+    @api.depends(
+        "type_id",
+        "yearly_period",
+        "monthly_period",
+        "daily_period",
+    )
+    def _compute_allowed_payment_term_period_id(self):
+        for document in self:
+            res = []
+            if document.type_id:
+                obj_payment_term_period = \
+                    self.env["stock.location_rent_payment_term_period"]
+                payment_term_period_ids = \
+                    document.type_id.payment_term_period_ids
+
+                lst_type = ["daily"]
+                if document.daily_period == 0:
+                    if document.monthly_period == 0:
+                        lst_type += ["monthly", "yearly"]
+                    else:
+                        lst_type += ["monthly"]
+
+                if lst_type:
+                    criteria_payment_term = [
+                        ("id", "in", payment_term_period_ids.ids),
+                        ("type", "in", lst_type),
+                    ]
+                    payment_term_period_ids = \
+                        obj_payment_term_period.search(criteria_payment_term)
+
+                    if payment_term_period_ids:
+                        ids = []
+                        for term_period in payment_term_period_ids:
+                            type_name = term_period.type + "_period"
+                            type = getattr(document, type_name)
+                            check_period_number = \
+                                type % term_period.payment_term_period_number
+                            if check_period_number == 0:
+                                ids.append(term_period.id)
+                        res = ids
+
+            document.allowed_payment_term_period_id = res
+
+    allowed_payment_term_period_id = fields.Many2many(
+        string="Allowed Payment Term Period",
+        comodel_name="stock.location_rent_payment_term_period",
+        compute="_compute_allowed_payment_term_period_id",
+        store=False,
+    )
+    payment_term_period_id = fields.Many2one(
+        string="Payment Term Period",
+        comodel_name="stock.location_rent_payment_term_period",
+        required=True,
+        readonly=True,
+        states={
+            "draft": [
+                ("readonly", False),
+            ],
+        },
+    )
+    payment_term_period_number = fields.Integer(
+        string="Payment Term Period Number",
+        related="payment_term_period_id.payment_term_period_number",
+        readonly=True,
+    )
+    invoice_method = fields.Selection(
+        string="Invoice Method",
+        selection=[
+            ("advance", "Advance"),
+            ("arear", "Arear"),
+        ],
+        required=True,
+        readonly=True,
+        states={
+            "draft": [
+                ("readonly", False),
+            ],
+        },
+    )
+    date_invoice_offset = fields.Integer(
+        string="Date Invoice Offset",
+        readonly=True,
+        states={
+            "draft": [
+                ("readonly", False),
+            ],
+        },
+    )
+    @api.multi
+    @api.depends(
+        "payment_term_period_id",
+    )
+    def _compute_invoice_number(self):
+        for document in self:
+            invoice_number = 0
+            if document.payment_term_period_id:
+                payment_term_period_number = \
+                    document.payment_term_period_id.payment_term_period_number
+                period_type = \
+                    document.payment_term_period_id.type
+                format = "%Y-%m-%d"
+
+                dt_start = datetime.strptime(document.date_start, format)
+                dt_end = datetime.strptime(document.date_end, format)
+                rent_days = (dt_end - dt_start).days
+                if period_type == "yearly":
+                    conv_days = (rent_days / 365)
+                elif period_type == "monthly":
+                    r_months = relativedelta(dt_end, dt_start)
+                    conv_days = r_months.months + (12*r_months.years)
+                else:
+                    conv_days = (rent_days / 1)
+                invoice_number = (conv_days / payment_term_period_number)
+            document.invoice_number = invoice_number
+
+    invoice_number = fields.Integer(
+        string="Invoice Number",
+        compute="_compute_invoice_number",
+        store=True,
+    )
     detail_ids = fields.One2many(
         string="Details",
         comodel_name="stock.location_rent_detail",
         inverse_name="rent_id",
         copy=True,
+        readonly=True,
+        states={
+            "draft": [
+                ("readonly", False),
+            ],
+        },
+    )
+    @api.depends(
+        "detail_ids.price_unit",
+        "detail_ids.tax_ids",
+    )
+    @api.multi
+    def _compute_amount_invoice(self):
+        for document in self:
+            document.amount_before_tax = 0.0
+            document.amount_tax = 0.0
+            document.amount_after_tax = 0.0
+
+    amount_invoice_before_tax = fields.Float(
+        string="Invoice Before Tax",
+        compute="_compute_amount_invoice",
+        store=True,
+    )
+    amount_invoice_tax = fields.Float(
+        string="Invoice Tax",
+        compute="_compute_amount_invoice",
+        store=True,
+    )
+    amount_invoice_after_tax = fields.Float(
+        string="Invoice After Tax",
+        compute="_compute_amount_invoice",
+        store=True,
+    )
+
+    @api.depends(
+        "detail_ids.price_unit",
+        "detail_ids.tax_ids",
+    )
+    @api.multi
+    def _compute_amount(self):
+        for document in self:
+            document.amount_before_tax = 0.0
+            document.amount_tax = 0.0
+            document.amount_after_tax = 0.0
+
+    amount_before_tax = fields.Float(
+        string="Amount Before Tax",
+        compute="_compute_amount",
+        store=True,
+    )
+    amount_tax = fields.Float(
+        string="Amount Tax",
+        compute="_compute_amount",
+        store=True,
+    )
+    amount_after_tax = fields.Float(
+        string="Amount After Tax",
+        compute="_compute_amount",
+        store=True,
+    )
+    payment_term_id = fields.Many2one(
+        string="Invoice Payment Term",
+        comodel_name="account.payment.term",
+        required=True,
         readonly=True,
         states={
             "draft": [
@@ -265,17 +425,10 @@ class StockLocationRent(models.Model):
             ],
         },
     )
-
-    @api.multi
-    def _compute_allowed_receivable_journal_ids(self):
-        for document in self:
-            document.allowed_invoice_ids = []
-
     allowed_receivable_journal_ids = fields.Many2many(
         string="Allowed Receivable Journals",
         comodel_name="account.journal",
-        compute="_compute_allowed_receivable_journal_ids",
-        store=False,
+        related="type_id.allowed_receivable_journal_ids",
     )
     receivable_journal_id = fields.Many2one(
         string="Receivable Journal",
@@ -288,17 +441,10 @@ class StockLocationRent(models.Model):
             ],
         },
     )
-
-    @api.multi
-    def _compute_allowed_receivable_account_ids(self):
-        for document in self:
-            document.allowed_invoice_ids = []
-
     allowed_receivable_account_ids = fields.Many2many(
         string="Allowed Receivable Accounts",
-        comodel_name="account.journal",
-        compute="_compute_allowed_receivable_account_ids",
-        store=False,
+        comodel_name="account.account",
+        related="type_id.allowed_receivable_account_ids",
     )
     receivable_account_id = fields.Many2one(
         string="Receivable Account",
@@ -411,6 +557,99 @@ class StockLocationRent(models.Model):
         string="Can Restart",
         compute="_compute_policy",
     )
+
+    @api.onchange(
+        "date_start",
+        "date_end",
+    )
+    def onchange_date_payment_term_period_id(self):
+        if self.date_start or self.date_end:
+            self.payment_term_period_id = False
+
+    @api.multi
+    def action_create_payment_schedule(self):
+        for document in self:
+            document._delete_payment_schedule()
+            document._create_payment_schedule()
+
+    @api.multi
+    def _delete_payment_schedule(self):
+        self.ensure_one()
+        if self.payment_term_ids:
+            for document in self.payment_term_ids:
+                invoice_id = document.invoice_id
+                document.write({"invoice_id": False})
+                invoice_id.unlink()
+            self.payment_term_ids.unlink()
+
+    @api.multi
+    def _create_payment_schedule(self):
+        self.ensure_one()
+        obj_payment_term = self.env["stock.location_rent_payment_term"]
+        date_start = self.date_start
+        for _period_num in range(1, self.invoice_number + 1):
+            date_end = self._get_payment_schedule_date_end(date_start)
+            date_invoice = self._get_payment_schedule_date_invoice(date_start)
+            date_due = self._get_payment_schedule_date_due(date_invoice)
+            data = {
+                "rent_id": self.id,
+                "date_start": date_start,
+                "date_end": date_end,
+                "date_invoice": date_invoice,
+                "date_due": date_due,
+            }
+            obj_payment_term.create(data)
+            date_start = self._get_payment_schedule_date_start(date_end)
+
+    @api.multi
+    def _get_payment_schedule_date_due(self, date_invoice):
+        self.ensure_one()
+        res = date_invoice
+        obj_account_payment_term = self.env["account.payment.term"]
+        payment_term = obj_account_payment_term.browse(self.payment_term_id.id)
+        payment_term_list = payment_term.compute(value=1, date_ref=date_invoice)[0]
+        if payment_term_list:
+            res = max(line[0] for line in payment_term_list)
+        return res
+
+    @api.multi
+    def _get_payment_schedule_date_invoice(self, date):
+        self.ensure_one()
+        if self.invoice_method == "advance":
+            factor = relativedelta(days=(self.date_invoice_offset*-1))
+        else:
+            factor = relativedelta(days=self.date_invoice_offset)
+
+        dt_start = fields.Date.from_string(date)
+        date_start = dt_start + factor
+        return fields.Date.to_string(date_start)
+
+    @api.multi
+    def _get_payment_schedule_date_start(self, date_end):
+        self.ensure_one()
+
+        dt_end = fields.Date.from_string(date_end)
+        date_start = dt_end + relativedelta(days=1)
+        return fields.Date.to_string(date_start)
+
+    @api.multi
+    def _get_payment_schedule_date_end(self, date):
+        self.ensure_one()
+
+        if self.payment_term_period_id.type == "daily":
+            add = relativedelta(
+                days=self.payment_term_period_id.payment_term_period_number)
+        elif self.payment_term_period_id.type == "monthly":
+            add = relativedelta(
+                months=self.payment_term_period_id.payment_term_period_number,
+                days=-1)
+        else:
+            add = relativedelta(
+                years=self.payment_term_period_id.payment_term_period_number,
+                days=-1)
+        dt_date = fields.Date.from_string(date)
+        date_end = dt_date + add
+        return fields.Date.to_string(date_end)
 
     @api.multi
     def action_confirm(self):

@@ -11,12 +11,8 @@
         <tree>
             <field name="location_id" />
             <field name="account_id" />
-            <field name="yearly_pricelist_id" />
-            <field name="monthly_pricelist_id" />
-            <field name="daily_pricelist_id" />
-            <field name="yearly_price_unit" />
-            <field name="monthly_price_unit" />
-            <field name="daily_price_unit" />
+            <field name="pricelist_id" />
+            <field name="price_unit" />
             <field name="amount_before_tax" />
             <field name="amount_tax" />
             <field name="amount_after_tax" />
@@ -38,38 +34,25 @@
             >
             </div>
             <group name="group_1" colspan="4" col="2">
-                <group name="group_1_1" colspan="1" col="2" string="Details">
-                    <field name="location_id" />
+                <group name="group_1_1" colspan="1" col="2">
+                    <field name="rent_id" invisible="1"/>
+                    <field
+                        name="allowed_location_ids"
+                        widget="many2many_tags"
+                        invisible="1"
+                    />
+                    <field
+                        name="location_id"
+                        domain="[('id','in',allowed_location_ids[0][2])]"
+                    />
                     <field name="account_id" />
                 </group>
-                <group name="group_1_2" string="Pricelists">
-                    <field name="yearly_pricelist_id" />
-                    <field name="monthly_pricelist_id" />
-                    <field name="daily_pricelist_id" />
-                </group>
-                <group name="group_1_3" string="Periods">
-                    <field name="yearly_period" />
-                    <field name="monthly_period" />
-                    <field name="daily_period" />
-                </group>
-                <group name="group_1_4" string="Prices">
+                <group name="group_1_2">
+                    <field name="pricelist_id" />
                     <field name="tax_ids" widget="many2many_tags"/>
-                    <field name="yearly_price_unit" />
-                    <field name="monthly_price_unit" />
-                    <field name="daily_price_unit" />
+                    <field name="price_unit" />
                 </group>
             </group>
-            <notebook colspan="4">
-                <page name="page_detail" string="Payment Terms">
-                    <group name="group_detail_1" colspan="4" col="2">
-                        <field
-                            name="detail_ids"
-                            colspan="2"
-                            nolabel="1"
-                        />
-                    </group>
-                </page>
-            </notebook>
             <group class="oe_subtotal_footer oe_right" colspan="2" name="footer">
                 <field name="amount_before_tax" widget='monetary' options="{'currency_field': 'parent_id.currency_id'}"/>
                 <field name="amount_tax" widget='monetary' options="{'currency_field': 'parent_id.currency_id'}"/>

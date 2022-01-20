@@ -45,16 +45,27 @@
                     <field name="sequence_id" domain="[('code','=','location_rent')]" />
                 </group>
                 <notebook>
-                    <page name="page_allowed_location" string="Allowed Locations">
+                    <page name="page_allowed_location" string="Locations">
                         <group name="group_allowed_location" colspan="4" col="2">
                             <field name="allowed_location_ids" nolabel="1" />
                         </group>
                     </page>
-                    <page name="page_allowed_pricelist" string="Allowed Pricelist">
+                    <page name="page_payment_term_period" string="Payment Term Periods">
+                        <group name="group_payment_term_period" colspan="4" col="2">
+                            <field name="payment_term_period_ids" nolabel="1" />
+                        </group>
+                    </page>
+                    <page name="page_allowed_pricelist" string="Pricelists">
                         <group name="group_allowed_pricelist" colspan="4" col="2">
                             <field name="allowed_yearly_pricelist_ids" widget="many2many_tags" />
                             <field name="allowed_monthly_pricelist_ids" widget="many2many_tags" />
                             <field name="allowed_daily_pricelist_ids" widget="many2many_tags" />
+                        </group>
+                    </page>
+                    <page name="page_allowed_accounting" string="Accountings">
+                        <group name="group_allowed_accounting" colspan="4" col="2">
+                            <field name="allowed_receivable_journal_ids" widget="many2many_tags" />
+                            <field name="allowed_receivable_account_ids" widget="many2many_tags" />
                         </group>
                     </page>
                     <page name="workflow_policy" string="Workflow Policy">
@@ -87,7 +98,7 @@
 <menuitem
     id="stock_location_rent_type_menu"
     name="Location Rent Types"
-    parent="stock.menu_stock_configuration"
+    parent="stock_location_rent_config_menu"
     action="stock_location_rent_type_action"
     sequence="10"
 />

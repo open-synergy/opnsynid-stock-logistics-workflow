@@ -29,12 +29,33 @@ class StockLocationRentType(models.Model):
         comodel_name="ir.sequence",
         company_dependent=True,
     )
+    payment_term_period_ids = fields.Many2many(
+        string="Payment Term Periods",
+        comodel_name="stock.location_rent_payment_term_period",
+        relation="rel_stock_location_rent_type_payment_term_period",
+        column1="type_id",
+        column2="payment_term_period_id",
+    )
     allowed_location_ids = fields.Many2many(
         string="Allowed Location",
         comodel_name="stock.location",
         relation="rel_stock_location_rent_type_location",
         column1="type_id",
         column2="location_id",
+    )
+    allowed_receivable_journal_ids = fields.Many2many(
+        string="Allowed Receivable Journal",
+        comodel_name="account.journal",
+        relation="rel_stock_location_rent_type_journal",
+        column1="type_id",
+        column2="journal_id",
+    )
+    allowed_receivable_account_ids = fields.Many2many(
+        string="Allowed Receivable Account",
+        comodel_name="account.account",
+        relation="rel_stock_location_rent_type_account",
+        column1="type_id",
+        column2="account_id",
     )
     allowed_yearly_pricelist_ids = fields.Many2many(
         string="Allowed Yearly Pricelist",

@@ -27,10 +27,11 @@
         "data/base_terminate_reason_configurator_data.xml",
         "data/base_workflow_policy_data.xml",
         "menu.xml",
+        "views/stock_location_rent_payment_term_period_views.xml",
         "views/stock_location_rent_type_views.xml",
-        "views/stock_location_rent_payment_term_detail_views.xml",
         "views/stock_location_rent_detail_views.xml",
         "views/stock_location_rent_views.xml",
+        "views/stock_location_views.xml",
     ],
     "demo": [],
 }

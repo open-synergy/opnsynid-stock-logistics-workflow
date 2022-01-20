@@ -306,12 +306,17 @@
                         <field name="type_id" />
                         <field name="user_id" />
                         <field name="currency_id" />
-                        <field name="date_start" />
-                        <field name="date_end" />
                         <field
-                                    name="allowed_location_ids"
+                                    name="allowed_pricelist_ids"
                                     widget="many2many_tags"
                                     invisible="1"
+                                />
+                        <!-- <field
+                                    name="pricelist_id"
+                                    domain="[('id','in',allowed_pricelist_ids[0][2])]"
+                                /> -->
+                        <field
+                                    name="pricelist_id"
                                 />
                     </group>
                     <group name="group_1_2">
@@ -325,46 +330,46 @@
                                     name="partner_contact_id"
                                     domain="[('id','in',allowed_partner_contact_ids[0][2])]"
                                 />
-                        <field name="partner_invoice_id" />
-                    </group>
-                    <group name="group_1_3" string="Pricelists">
                         <field
-                                    name="allowed_yearly_pricelist_ids"
-                                    widget="many2many_tags"
-                                    invisible="1"
-                                />
-                        <field
-                                    name="allowed_monthly_pricelist_ids"
-                                    widget="many2many_tags"
-                                    invisible="1"
-                                />
-                        <field
-                                    name="allowed_daily_pricelist_ids"
-                                    widget="many2many_tags"
-                                    invisible="1"
-                                />
-                        <field
-                                    name="yearly_pricelist_id"
-                                    domain="[('id','in',allowed_yearly_pricelist_ids[0][2])]"
-                                />
-                        <field
-                                    name="monthly_pricelist_id"
-                                    domain="[('id','in',allowed_monthly_pricelist_ids[0][2])]"
-                                />
-                        <field
-                                    name="daily_pricelist_id"
-                                    domain="[('id','in',allowed_daily_pricelist_ids[0][2])]"
+                                    name="partner_invoice_id"
+                                    domain="[('id','in',allowed_partner_contact_ids[0][2])]"
                                 />
                     </group>
-                    <group name="group_1_4" string="Periods">
+                    <group name="group_1_3" string="Periods">
+                        <field name="date_start" />
+                        <field name="date_end" />
                         <field name="yearly_period" />
                         <field name="monthly_period" />
                         <field name="daily_period" />
+                        <field
+                            name="allowed_payment_term_period_id"
+                            widget="many2many_tags"
+                            invisible="1"
+                        />
+                        <field
+                            name="payment_term_period_id"
+                            domain="[('id','in',allowed_payment_term_period_id[0][2])]"
+                        />
+                        <field name="payment_term_period_number" />
+                    </group>
+                    <group name="group_1_4" string="Invoices">
+                        <field name="payment_term_id" />
+                        <field name="invoice_method" />
+                        <field name="date_invoice_offset" />
+                        <field name="invoice_number" />
                     </group>
                 </group>
                 <notebook colspan="4">
                     <page name="page_detail" string="Details">
                         <group name="group_detail_1" colspan="4" col="2">
+                            <button
+                                name="action_create_payment_schedule"
+                                type="object"
+                                string="Create Payment Schedule"
+                                icon="gtk-execute"
+                                colspan="2"
+                                attrs="{'invisible':[('state','!=','draft')]}"
+                            />
                             <field
                                 name="detail_ids"
                                 colspan="2"
@@ -385,9 +390,6 @@
                                 <field name="invoice_id" />
                                 <field name="date_invoice" />
                                 <field name="date_due" />
-                                <field name="amount_before_tax" />
-                                <field name="amount_tax" />
-                                <field name="amount_after_tax" />
                                 <field name="state" />
                                 <button
                                               name="action_create_invoice"
@@ -412,27 +414,21 @@
                             <field
                                         name="allowed_receivable_journal_ids"
                                         widget="many2many_tags"
-                                        invisible="0"
+                                        invisible="1"
                                     />
                             <field
                                         name="allowed_receivable_account_ids"
                                         widget="many2many_tags"
-                                        invisible="0"
+                                        invisible="1"
                                     />
                             <field
                                         name="receivable_account_id"
+                                        domain="[('id','in',allowed_receivable_account_ids[0][2])]"
                                     />
                             <field
                                         name="receivable_journal_id"
-                                    />
-                            <!-- <field
-                                        name="receivable_account_id"
                                         domain="[('id','in',allowed_receivable_journal_ids[0][2])]"
                                     />
-                            <field
-                                        name="receivable_journal_id"
-                                        domain="[('id','in',allowed_receivable_account_ids[0][2])]"
-                                    /> -->
                         </group>
                     </page>
                     <page string="Reviews" name="tier_validation">
@@ -478,6 +474,16 @@
                         </group>
                     </page>
                 </notebook>
+                <group class="oe_subtotal_footer oe_right" colspan="2" name="footer_amount_invoice">
+                    <field name="amount_invoice_before_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    <field name="amount_invoice_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    <field name="amount_invoice_after_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                </group>
+                <group class="oe_subtotal_footer oe_left" colspan="2" name="footer_amount">
+                    <field name="amount_before_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    <field name="amount_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    <field name="amount_after_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                </group>
             </sheet>
             <div class="oe_chatter">
                 <field

@@ -3,7 +3,8 @@
 # Copyright 2022 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import api, fields, models
+from openerp import api, fields, models, _
+from openerp.exceptions import Warning as UserError
 
 
 class StockLocationRentDetail(models.Model):
@@ -13,8 +14,12 @@ class StockLocationRentDetail(models.Model):
     rent_id = fields.Many2one(
         string="# Rent",
         comodel_name="stock.location_rent",
-        required=True,
         ondelete="cascade",
+    )
+    allowed_location_ids = fields.Many2many(
+        string="Allowed Location",
+        comodel_name="stock.location",
+        related="rent_id.type_id.allowed_location_ids",
     )
     location_id = fields.Many2one(
         string="Location",
@@ -26,40 +31,13 @@ class StockLocationRentDetail(models.Model):
         comodel_name="account.account",
         required=True,
     )
-    yearly_pricelist_id = fields.Many2one(
-        string="Yearly Pricelist",
+    pricelist_id = fields.Many2one(
+        string="Pricelist",
         comodel_name="product.pricelist",
         required=True,
     )
-    monthly_pricelist_id = fields.Many2one(
-        string="Monthly Pricelist",
-        comodel_name="product.pricelist",
-        required=True,
-    )
-    daily_pricelist_id = fields.Many2one(
-        string="Daily Pricelist",
-        comodel_name="product.pricelist",
-        required=True,
-    )
-    yearly_period = fields.Integer(
-        string="Yearly Period",
-    )
-    monthly_period = fields.Integer(
-        string="Monthly Period",
-    )
-    daily_period = fields.Integer(
-        string="Daily Period",
-    )
-    yearly_price_unit = fields.Float(
-        string="Yearly Price Unit",
-        required=True,
-    )
-    monthly_price_unit = fields.Float(
-        string="Monthly Price Unit",
-        required=True,
-    )
-    daily_price_unit = fields.Float(
-        string="Daily Price Unit",
+    price_unit = fields.Float(
+        string="Price Unit",
         required=True,
     )
     tax_ids = fields.Many2many(
@@ -69,27 +47,21 @@ class StockLocationRentDetail(models.Model):
         column1="rent_detail_id",
         column2="tax_id",
     )
-    detail_ids = fields.One2many(
-        string="Details",
-        comodel_name="stock.location_rent_payment_term_detail",
-        inverse_name="detail_id",
-    )
 
     @api.depends(
-        "yearly_period",
-        "monthly_period",
-        "daily_period",
-        "yearly_price_unit",
-        "monthly_price_unit",
-        "daily_price_unit",
+        "price_unit",
         "tax_ids",
     )
     @api.multi
     def _compute_amount(self):
         for document in self:
-            document.amount_before_tax = 0.0
-            document.amount_tax = 0.0
-            document.amount_after_tax = 0.0
+            tax_comp = document.tax_ids.compute_all(
+                price_unit=document.price_unit,
+                quantity=1.0,
+            )
+            document.amount_before_tax = tax_comp["total"]
+            document.amount_tax = (tax_comp["total_included"] - tax_comp["total"])
+            document.amount_after_tax = tax_comp["total_included"]
 
     amount_before_tax = fields.Float(
         string="Amount Before Tax",
@@ -106,3 +78,57 @@ class StockLocationRentDetail(models.Model):
         compute="_compute_amount",
         store=True,
     )
+
+    @api.multi
+    def _create_invoice_line(self, invoice):
+        self.ensure_one()
+        obj_account_invoice_line = self.env["account.invoice.line"]
+        obj_account_invoice_line.create(
+            self._prepare_invoice_line(invoice)
+        )
+
+    @api.multi
+    def _prepare_invoice_line(self, invoice):
+        self.ensure_one()
+        # name = """{}
+        #
+        # Period: {} to {}
+        # """.format(
+        #     self.product_id.name,
+        #     period.date_start,
+        #     period.date_end,
+        # )
+        return {
+            "invoice_id": invoice.id,
+            "name": "Details",
+            "account_id": self.account_id.id,
+            "price_unit": self.price_unit,
+            "product_id": self.location_id.rent_product_id.id,
+            "invoice_line_tax_id": [(6, 0, self.tax_ids.ids)],
+        }
+
+    @api.onchange(
+        "location_id",
+        "rent_id.invoice_method",
+    )
+    def onchange_account_id(self):
+        if self.location_id:
+            if self.rent_id.invoice_method == "advance":
+                self.account_id = self.location_id.deffered_revenue_account_id
+            if self.rent_id.invoice_method == "arear":
+                self.account_id = self.location_id.income_account_id
+
+    @api.onchange(
+        "pricelist_id",
+    )
+    def onchange_price_unit(self):
+        price_unit = 0.0
+        if self.pricelist_id:
+            if not self.location_id.rent_product_id:
+                msg_err = _("Product location rent not found")
+                raise UserError(msg_err)
+            price_unit = self.pricelist_id.price_get(
+                prod_id=self.location_id.rent_product_id.id,
+                qty=1.0,
+            )[self.pricelist_id.id]
+        self.price_unit = price_unit
