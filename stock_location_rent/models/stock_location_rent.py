@@ -428,11 +428,6 @@ class StockLocationRent(models.Model):
         comodel_name="stock.location_rent_payment_term",
         inverse_name="rent_id",
         readonly=True,
-        states={
-            "draft": [
-                ("readonly", False),
-            ],
-        },
     )
     allowed_receivable_journal_ids = fields.Many2many(
         string="Allowed Receivable Journals",
@@ -803,7 +798,6 @@ class StockLocationRent(models.Model):
             result.append((record.id, name))
         return result
 
-    @api.multi
     @api.constrains(
       "date_start",
       "date_end",
@@ -814,3 +808,13 @@ class StockLocationRent(models.Model):
                 if record.date_start > record.date_end:
                     msg_err = _("Date Start cannot be greater than Date End")
                     raise UserError(msg_err)
+
+    @api.constrains(
+        "state",
+        "payment_term_ids"
+    )
+    def _check_number_of_payment_term(self):
+        msg_err = _("No payment terms")
+        for record in self:
+            if record.state == "confirm" and len(record.payment_term_ids) == 0:
+                raise UserError(msg_err)
