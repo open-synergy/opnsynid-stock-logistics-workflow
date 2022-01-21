@@ -50,7 +50,8 @@
                     <field name="invoice_method" />
                 </group>
                 <group name="group_1_2">
-                    <field name="pricelist_id" />
+
+                    <field name="pricelist_id" domain="[('id','in',parent.allowed_pricelist_ids[0][2])]"/>
                     <field name="tax_ids" widget="many2many_tags"/>
                     <field name="price_unit" />
                 </group>

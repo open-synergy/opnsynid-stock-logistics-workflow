@@ -43,7 +43,7 @@
                     <field name="name" />
                     <field name="type" />
                     <field name="payment_term_period_number" />
-                    <field name="pricelist_id" />
+                    <field name="allowed_pricelist_ids" widget="many2many_tags" />
                     <field name="active" />
                 </group>
                 <notebook>

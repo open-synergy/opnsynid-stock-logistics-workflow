@@ -2,7 +2,8 @@
 # Copyright 2022 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import fields, models
+from openerp import _, api, fields, models
+from openerp.exceptions import Warning as UserError, ValidationError
 
 
 class StockLocationRentPaymentTermPeriod(models.Model):
@@ -23,17 +24,20 @@ class StockLocationRentPaymentTermPeriod(models.Model):
             ("daily", "Daily"),
             ("monthly", "Monthly"),
             ("yearly", "Yearly"),
-        ]
+        ],
+        required=True,
     )
     payment_term_period_number = fields.Integer(
         string="Payment Term Period Number",
         required=True,
         default=1,
     )
-    pricelist_id = fields.Many2one(
-        string="Pricelist",
+    allowed_pricelist_ids = fields.Many2many(
+        string="Allowed Pricelist",
         comodel_name="product.pricelist",
-        required=True,
+        relation="rel_stock_location_rent_payment_term_period_2_pricelist",
+        column1="payment_term_period_id",
+        column2="pricelist_id",
     )
     active = fields.Boolean(
         string="Active",
