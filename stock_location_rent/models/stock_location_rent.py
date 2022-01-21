@@ -823,3 +823,28 @@ class StockLocationRent(models.Model):
         for record in self:
             if record.state == "confirm" and len(record.payment_term_ids) == 0:
                 raise UserError(msg_err)
+
+    @api.constrains(
+        "state",
+    )
+    def _check_payment_term_criteria(self):
+        msg_err = _("Please cancel all payment term invoices")
+        for record in self:
+            num_not_allowed = record._get_not_allowed_to_be_cancelled_payment_term()
+            if record.state == "cancel" and num_not_allowed > 0:
+                raise UserError(msg_err)
+
+    @api.multi
+    def _prepare_not_allowed_tobe_cancelled_payment_term_domain(self):
+        self.ensure_one()
+        return [
+            ("rent_id", "=", self.id),
+            ("state", "=", "invoiced",)
+        ]
+
+    @api.multi
+    def _get_not_allowed_to_be_cancelled_payment_term(self):
+        self.ensure_one()
+        dom = self._prepare_not_allowed_tobe_cancelled_payment_term_domain()
+        obj_period = self.env["stock.location_rent_payment_term"]
+        return obj_period.search_count(dom)
