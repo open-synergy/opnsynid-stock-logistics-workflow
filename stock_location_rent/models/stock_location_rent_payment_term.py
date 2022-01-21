@@ -53,8 +53,11 @@ class StockLocationRentPaymentTerm(models.Model):
                     state = "invoiced"
                 else:
                     state = "uninvoiced"
-            elif record.rent_id.state == "terminated":
-                state = "terminated"
+            elif record.rent_id.state == "terminate":
+                if record.invoice_id:
+                    state = "invoiced"
+                else:
+                    state = "terminated"
             else:
                 state = "cancelled"
             record.state = state
