@@ -23,7 +23,8 @@ class StockLocationRentPaymentTermPeriod(models.Model):
             ("daily", "Daily"),
             ("monthly", "Monthly"),
             ("yearly", "Yearly"),
-        ]
+        ],
+        required=True,
     )
     payment_term_period_number = fields.Integer(
         string="Payment Term Period Number",
