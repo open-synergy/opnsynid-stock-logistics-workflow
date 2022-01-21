@@ -318,11 +318,13 @@ class StockLocationRent(models.Model):
     @api.multi
     @api.depends(
         "payment_term_period_id",
+        "date_start",
+        "date_end",
     )
     def _compute_invoice_number(self):
         for document in self:
             invoice_number = 0
-            if document.payment_term_period_id:
+            if document.payment_term_period_id and document.date_start and document.date_end:
                 payment_term_period_number = \
                     document.payment_term_period_id.payment_term_period_number
                 period_type = \
