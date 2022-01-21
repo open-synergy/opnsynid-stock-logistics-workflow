@@ -139,6 +139,24 @@ class StockLocationRent(models.Model):
             ],
         },
     )
+
+    @api.depends(
+        "currency_id",
+        "payment_term_period_id"
+    )
+    def _compute_allowed_pricelist_ids(self):
+        obj_pricelist = self.env["product.pricelist"]
+        for record in self:
+            result = []
+            if record.currency_id and record.payment_term_period_id and record.payment_term_period_id.allowed_pricelist_ids:
+                allowed_pricelists = record.payment_term_period_id.allowed_pricelist_ids
+                criteria = [
+                    ("currency_id", "=", record.currency_id.id),
+                    ("id", "in", allowed_pricelists.ids),
+                ]
+                result = obj_pricelist.search(criteria)
+            record.allowed_pricelist_ids = result
+
     pricelist_id = fields.Many2one(
         string="Pricelist",
         comodel_name="product.pricelist",
@@ -149,6 +167,12 @@ class StockLocationRent(models.Model):
                 ("readonly", False),
             ],
         },
+    )
+    allowed_pricelist_ids = fields.Many2many(
+        string="Allowed Pricelist",
+        comodel_name="product.pricelist",
+        compute="_compute_allowed_pricelist_ids",
+        store=False,
     )
     date_start = fields.Date(
         string="Date Start",
@@ -556,8 +580,7 @@ class StockLocationRent(models.Model):
     )
     def onchange_pricelist_id(self):
         self.pricelist_id = False
-        if self.payment_term_period_id:
-            self.pricelist_id = self.payment_term_period_id.pricelist_id
+
 
     @api.multi
     def action_create_payment_schedule(self):

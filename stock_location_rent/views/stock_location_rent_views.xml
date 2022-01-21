@@ -344,7 +344,8 @@
                         <field name="payment_term_period_number" />
                     </group>
                     <group name="group_1_4" string="Invoices">
-                        <field name="pricelist_id" />
+                        <field name="allowed_pricelist_ids" widget="many2many_tags" invisible="1"/>
+                        <field name="pricelist_id" domain="[('id','in',allowed_pricelist_ids[0][2])]"/>
                         <field name="payment_term_id" />
                         <field name="invoice_method" />
                         <field name="date_invoice_offset" />
