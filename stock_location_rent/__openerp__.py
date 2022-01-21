@@ -12,6 +12,7 @@
     "application": True,
     "depends": [
         "stock",
+        "account_accountant",
         "base_sequence_configurator",
         "base_workflow_policy",
         "base_cancel_reason",

@@ -31,9 +31,19 @@ class StockLocationRentDetail(models.Model):
         comodel_name="account.account",
         required=True,
     )
+    invoice_method = fields.Selection(
+        string="Invoice Method",
+        related="rent_id.invoice_method"
+    )
+
+    @api.model
+    def _default_pricelist_id(self):
+        return self.rent_id.pricelist_id.id
+
     pricelist_id = fields.Many2one(
         string="Pricelist",
         comodel_name="product.pricelist",
+        default=lambda self: self._default_pricelist_id(),
         required=True,
     )
     price_unit = fields.Float(
@@ -80,27 +90,24 @@ class StockLocationRentDetail(models.Model):
     )
 
     @api.multi
-    def _create_invoice_line(self, invoice):
+    def _create_invoice_line(self, invoice, date_start, date_end):
         self.ensure_one()
         obj_account_invoice_line = self.env["account.invoice.line"]
         obj_account_invoice_line.create(
-            self._prepare_invoice_line(invoice)
+            self._prepare_invoice_line(invoice, date_start, date_end)
         )
 
     @api.multi
-    def _prepare_invoice_line(self, invoice):
+    def _prepare_invoice_line(self, invoice, date_start, date_end):
         self.ensure_one()
-        # name = """{}
-        #
-        # Period: {} to {}
-        # """.format(
-        #     self.product_id.name,
-        #     period.date_start,
-        #     period.date_end,
-        # )
+        name = "Rent for {} from {} to {}".format(
+            self.location_id.name,
+            date_start,
+            date_end
+        )
         return {
             "invoice_id": invoice.id,
-            "name": "Details",
+            "name": name,
             "account_id": self.account_id.id,
             "price_unit": self.price_unit,
             "product_id": self.location_id.rent_product_id.id,
@@ -109,7 +116,7 @@ class StockLocationRentDetail(models.Model):
 
     @api.onchange(
         "location_id",
-        "rent_id.invoice_method",
+        "invoice_method",
     )
     def onchange_account_id(self):
         if self.location_id:

@@ -48,13 +48,11 @@ class StockLocationRentPaymentTerm(models.Model):
         for record in self:
             if record.rent_id.state in ["draft", "confirm"]:
                 state = "draft"
-            elif record.rent_id.state == "start":
+            elif record.rent_id.state in ["start", "finish"]:
                 if record.invoice_id:
                     state = "invoiced"
                 else:
                     state = "uninvoiced"
-            elif record.rent_id.state == "finish":
-                state = "finished"
             elif record.rent_id.state == "terminated":
                 state = "terminated"
             else:
@@ -69,7 +67,6 @@ class StockLocationRentPaymentTerm(models.Model):
             ("invoiced", "Invoiced"),
             ("cancelled", "Cancelled"),
             ("terminated", "Terminated"),
-            ("finished", "Finished"),
         ],
         compute="_compute_state",
         store=True,
@@ -95,7 +92,8 @@ class StockLocationRentPaymentTerm(models.Model):
             "invoice_id": invoice.id,
         })
         for detail in rent.detail_ids:
-            detail._create_invoice_line(invoice)
+            detail._create_invoice_line(
+                invoice, self.date_start, self.date_end)
         invoice.button_reset_taxes()
         return True
 
