@@ -332,6 +332,8 @@
                         <field name="yearly_period" />
                         <field name="monthly_period" />
                         <field name="daily_period" />
+                    </group>
+                    <group name="group_1_4" string="Invoices">
                         <field
                             name="allowed_payment_term_period_id"
                             widget="many2many_tags"
@@ -341,9 +343,7 @@
                             name="payment_term_period_id"
                             domain="[('id','in',allowed_payment_term_period_id[0][2])]"
                         />
-                        <field name="payment_term_period_number" />
-                    </group>
-                    <group name="group_1_4" string="Invoices">
+                        <field name="payment_term_period_number" invisible="1"/>
                         <field name="allowed_pricelist_ids" widget="many2many_tags" invisible="1"/>
                         <field name="pricelist_id" domain="[('id','in',allowed_pricelist_ids[0][2])]"/>
                         <field name="payment_term_id" />

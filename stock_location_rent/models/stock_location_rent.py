@@ -229,16 +229,16 @@ class StockLocationRent(models.Model):
     @api.multi
     @api.depends(
         "type_id",
-        "yearly_period",
-        "monthly_period",
-        "daily_period",
+        "date_start",
+        "date_end",
     )
     def _compute_allowed_payment_term_period_id(self):
+        obj_payment_term_period = self.env["stock.location_rent_payment_term_period"]
+        format = "%Y-%m-%d"
         for document in self:
             res = []
-            if document.type_id:
-                obj_payment_term_period = \
-                    self.env["stock.location_rent_payment_term_period"]
+            if document.type_id and document.date_start and document.date_end:
+
                 payment_term_period_ids = \
                     document.type_id.payment_term_period_ids
 
@@ -258,15 +258,20 @@ class StockLocationRent(models.Model):
                         obj_payment_term_period.search(criteria_payment_term)
 
                     if payment_term_period_ids:
-                        ids = []
                         for term_period in payment_term_period_ids:
-                            type_name = term_period.type + "_period"
-                            type = getattr(document, type_name)
+                            if term_period.type == "yearly":
+                                check_number = document.yearly_period
+                            elif term_period.type == "monthly":
+                                check_number = document.yearly_period * 12
+                                check_number += document.monthly_period
+                            elif term_period.type == "daily":
+                                dt_start = datetime.strptime(document.date_start, format)
+                                dt_end = datetime.strptime(document.date_end, format)
+                                check_number = (dt_end - dt_start).days
                             check_period_number = \
-                                type % term_period.payment_term_period_number
-                            if check_period_number == 0:
-                                ids.append(term_period.id)
-                        res = ids
+                                check_number % term_period.payment_term_period_number
+                            if check_period_number == 0 and check_number != 0:
+                                res.append(term_period.id)
 
             document.allowed_payment_term_period_id = res
 

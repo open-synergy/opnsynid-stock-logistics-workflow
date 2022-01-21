@@ -46,13 +46,3 @@ class StockLocationRentPaymentTermPeriod(models.Model):
     note = fields.Text(
         string="Note",
     )
-
-    @api.constrains(
-        "pricelist_id",
-        "allowed_pricelist_ids"
-    )
-    def _check_default_pricelist(self):
-        error_msg = _("Default pricelist must available on allowed pricelist")
-        if self.pricelist_id:
-            if self.pricelist_id.id not in self.allowed_pricelist_ids.ids:
-                raise ValidationError(error_msg)
