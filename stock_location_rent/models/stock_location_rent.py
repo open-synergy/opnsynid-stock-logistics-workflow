@@ -617,7 +617,7 @@ class StockLocationRent(models.Model):
                 "date_due": date_due,
             }
             obj_payment_term.create(data)
-            date_start = self._get_payment_schedule_date_start(date_end)
+            date_start = date_end
 
     @api.multi
     def _get_payment_schedule_date_due(self, date_invoice):
@@ -659,12 +659,10 @@ class StockLocationRent(models.Model):
                 days=self.payment_term_period_id.payment_term_period_number)
         elif self.payment_term_period_id.type == "monthly":
             add = relativedelta(
-                months=self.payment_term_period_id.payment_term_period_number,
-                days=-1)
+                months=self.payment_term_period_id.payment_term_period_number)
         else:
             add = relativedelta(
-                years=self.payment_term_period_id.payment_term_period_number,
-                days=-1)
+                years=self.payment_term_period_id.payment_term_period_number)
         dt_date = fields.Date.from_string(date)
         date_end = dt_date + add
         return fields.Date.to_string(date_end)
