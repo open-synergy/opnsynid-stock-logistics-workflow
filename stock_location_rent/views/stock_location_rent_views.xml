@@ -361,6 +361,11 @@
                                 nolabel="1"
                             />
                         </group>
+                        <group colspan="4" col="2" name="footer_amount_invoice">
+                            <field name="amount_invoice_before_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                            <field name="amount_invoice_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                            <field name="amount_invoice_after_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                        </group>
                     </page>
                     <page name="page_payment_terms" string="Payment Terms">
                         <group name="group_payment_terms_1" colspan="4" col="2">
@@ -401,8 +406,13 @@
                             </tree>
                             </field>
                         </group>
+                        <group colspan="4" col="2" name="footer_amount">
+                            <field name="amount_before_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                            <field name="amount_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                            <field name="amount_after_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                        </group>
                     </page>
-                    <page name="page_accounting" string="Accountings">
+                    <page name="page_accounting" string="Accounting">
                         <group name="group_accounting_1" colspan="4" col="2">
                             <field
                                         name="allowed_receivable_journal_ids"
@@ -467,16 +477,8 @@
                         </group>
                     </page>
                 </notebook>
-                <group class="oe_subtotal_footer oe_right" colspan="2" name="footer_amount_invoice">
-                    <field name="amount_invoice_before_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                    <field name="amount_invoice_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                    <field name="amount_invoice_after_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                </group>
-                <group class="oe_subtotal_footer oe_left" colspan="2" name="footer_amount">
-                    <field name="amount_before_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                    <field name="amount_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                    <field name="amount_after_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                </group>
+
+
             </sheet>
             <div class="oe_chatter">
                 <field
