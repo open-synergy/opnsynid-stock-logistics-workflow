@@ -355,14 +355,6 @@
                 <notebook colspan="4">
                     <page name="page_detail" string="Details">
                         <group name="group_detail_1" colspan="4" col="2">
-                            <button
-                                name="action_create_payment_schedule"
-                                type="object"
-                                string="Create Payment Schedule"
-                                icon="gtk-execute"
-                                colspan="2"
-                                attrs="{'invisible':[('state','!=','draft')]}"
-                            />
                             <field
                                 name="detail_ids"
                                 colspan="2"
@@ -372,6 +364,14 @@
                     </page>
                     <page name="page_payment_terms" string="Payment Terms">
                         <group name="group_payment_terms_1" colspan="4" col="2">
+                            <button
+                                name="action_create_payment_schedule"
+                                type="object"
+                                string="Create Payment Schedule"
+                                icon="gtk-execute"
+                                colspan="2"
+                                attrs="{'invisible':[('state','!=','draft')]}"
+                            />
                             <field
                                 name="payment_term_ids"
                                 colspan="2"
