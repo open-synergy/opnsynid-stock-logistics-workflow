@@ -3,7 +3,7 @@
 # Copyright 2022 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import api, fields, models, _
+from openerp import _, api, fields, models
 from openerp.exceptions import Warning as UserError
 
 
@@ -32,8 +32,7 @@ class StockLocationRentDetail(models.Model):
         required=True,
     )
     invoice_method = fields.Selection(
-        string="Invoice Method",
-        related="rent_id.invoice_method"
+        string="Invoice Method", related="rent_id.invoice_method"
     )
 
     @api.model
@@ -70,7 +69,7 @@ class StockLocationRentDetail(models.Model):
                 quantity=1.0,
             )
             document.amount_before_tax = tax_comp["total"]
-            document.amount_tax = (tax_comp["total_included"] - tax_comp["total"])
+            document.amount_tax = tax_comp["total_included"] - tax_comp["total"]
             document.amount_after_tax = tax_comp["total_included"]
 
     amount_before_tax = fields.Float(
@@ -101,9 +100,7 @@ class StockLocationRentDetail(models.Model):
     def _prepare_invoice_line(self, invoice, date_start, date_end):
         self.ensure_one()
         name = "Rent for {} from {} to {}".format(
-            self.location_id.name,
-            date_start,
-            date_end
+            self.location_id.name, date_start, date_end
         )
         return {
             "invoice_id": invoice.id,

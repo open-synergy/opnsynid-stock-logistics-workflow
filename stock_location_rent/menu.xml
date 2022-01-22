@@ -4,8 +4,18 @@
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 <openerp>
 <data>
-<menuitem id="stock_location_rent_root_menu" name="Location Rent" parent="stock.menu_stock_root" sequence="3"/>
-<menuitem id="stock_location_rent_config_menu" name="Location Rent" parent="stock.menu_stock_configuration" sequence="100"/>
+<menuitem
+            id="stock_location_rent_root_menu"
+            name="Location Rent"
+            parent="stock.menu_stock_root"
+            sequence="3"
+        />
+<menuitem
+            id="stock_location_rent_config_menu"
+            name="Location Rent"
+            parent="stock.menu_stock_configuration"
+            sequence="100"
+        />
 
 </data>
 </openerp>
