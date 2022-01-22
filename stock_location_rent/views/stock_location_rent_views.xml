@@ -152,9 +152,9 @@
             <field name="user_id" />
             <field name="date_start" />
             <field name="date_end" />
-            <field name="amount_before_tax" string="Untaxed" sum="Total Untaxed"/>
-            <field name="amount_tax" string="Tax" sum="Total Tax"/>
-            <field name="amount_after_tax" string="Total" sum="Total"/>
+            <field name="amount_before_tax" string="Untaxed" sum="Total Untaxed" />
+            <field name="amount_tax" string="Tax" sum="Total Tax" />
+            <field name="amount_after_tax" string="Total" sum="Total" />
             <field name="state" />
         </tree>
     </field>
@@ -335,17 +335,24 @@
                     </group>
                     <group name="group_1_4" string="Invoices">
                         <field
-                            name="allowed_payment_term_period_id"
-                            widget="many2many_tags"
-                            invisible="1"
-                        />
+                                    name="allowed_payment_term_period_id"
+                                    widget="many2many_tags"
+                                    invisible="1"
+                                />
                         <field
-                            name="payment_term_period_id"
-                            domain="[('id','in',allowed_payment_term_period_id[0][2])]"
-                        />
-                        <field name="payment_term_period_number" invisible="1"/>
-                        <field name="allowed_pricelist_ids" widget="many2many_tags" invisible="1"/>
-                        <field name="pricelist_id" domain="[('id','in',allowed_pricelist_ids[0][2])]"/>
+                                    name="payment_term_period_id"
+                                    domain="[('id','in',allowed_payment_term_period_id[0][2])]"
+                                />
+                        <field name="payment_term_period_number" invisible="1" />
+                        <field
+                                    name="allowed_pricelist_ids"
+                                    widget="many2many_tags"
+                                    invisible="1"
+                                />
+                        <field
+                                    name="pricelist_id"
+                                    domain="[('id','in',allowed_pricelist_ids[0][2])]"
+                                />
                         <field name="payment_term_id" />
                         <field name="invoice_method" />
                         <field name="date_invoice_offset" />
@@ -355,33 +362,37 @@
                 <notebook colspan="4">
                     <page name="page_detail" string="Details">
                         <group name="group_detail_1" colspan="4" col="2">
-                            <field
-                                name="detail_ids"
-                                colspan="2"
-                                nolabel="1"
-                            />
+                            <field name="detail_ids" colspan="2" nolabel="1" />
                         </group>
-                        <group colspan="4" col="2" name="footer_amount_invoice">
-                            <field name="amount_invoice_before_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                            <field name="amount_invoice_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                            <field name="amount_invoice_after_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                        <group colspan="4" col="2" name="footer_amount">
+                            <field
+                                        name="amount_before_tax"
+                                        widget='monetary'
+                                        options="{'currency_field': 'currency_id'}"
+                                    />
+                            <field
+                                        name="amount_tax"
+                                        widget='monetary'
+                                        options="{'currency_field': 'currency_id'}"
+                                    />
+                            <field
+                                        name="amount_after_tax"
+                                        widget='monetary'
+                                        options="{'currency_field': 'currency_id'}"
+                                    />
                         </group>
                     </page>
                     <page name="page_payment_terms" string="Payment Terms">
                         <group name="group_payment_terms_1" colspan="4" col="2">
                             <button
-                                name="action_create_payment_schedule"
-                                type="object"
-                                string="Create Payment Schedule"
-                                icon="gtk-execute"
-                                colspan="2"
-                                attrs="{'invisible':[('state','!=','draft')]}"
-                            />
-                            <field
-                                name="payment_term_ids"
-                                colspan="2"
-                                nolabel="1"
-                            >
+                                        name="action_create_payment_schedule"
+                                        type="object"
+                                        string="Create Payment Schedule"
+                                        icon="gtk-execute"
+                                        colspan="2"
+                                        attrs="{'invisible':[('state','!=','draft')]}"
+                                    />
+                            <field name="payment_term_ids" colspan="2" nolabel="1">
                             <tree>
                                 <field name="date_start" />
                                 <field name="date_end" />
@@ -390,26 +401,40 @@
                                 <field name="date_due" />
                                 <field name="state" />
                                 <button
-                                              name="action_create_invoice"
-                                              string="Create Invoice"
-                                              type="object"
-                                              icon="gtk-execute"
-                                              states="uninvoiced"
-                                          />
+                                                name="action_create_invoice"
+                                                string="Create Invoice"
+                                                type="object"
+                                                icon="gtk-execute"
+                                                states="uninvoiced"
+                                            />
                                 <button
-                                              name="action_delete_invoice"
-                                              string="Delete Invoice"
-                                              type="object"
-                                              icon="gtk-cancel"
-                                              states="invoiced"
-                                          />
+                                                name="action_delete_invoice"
+                                                string="Delete Invoice"
+                                                type="object"
+                                                icon="gtk-cancel"
+                                                states="invoiced"
+                                            />
                             </tree>
                             </field>
                         </group>
-                        <group colspan="4" col="2" name="footer_amount">
-                            <field name="amount_before_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                            <field name="amount_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                            <field name="amount_after_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                        <group name="group_amount_invoice" colspan="4" col="2">
+                            <group name="group_amount_invoice_1" colspan="1" col="2">
+                                <field
+                                            name="total_invoice_before_tax"
+                                            widget='monetary'
+                                            options="{'currency_field': 'currency_id'}"
+                                        />
+                                <field
+                                            name="total_invoice_tax"
+                                            widget='monetary'
+                                            options="{'currency_field': 'currency_id'}"
+                                        />
+                                <field
+                                            name="total_invoice_after_tax"
+                                            widget='monetary'
+                                            options="{'currency_field': 'currency_id'}"
+                                        />
+                            </group>
                         </group>
                     </page>
                     <page name="page_accounting" string="Accounting">
