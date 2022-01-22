@@ -3,7 +3,7 @@
 # Copyright 2020 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import models, api, fields
+from openerp import api, fields, models
 from openerp.addons import decimal_precision as dp
 
 
@@ -34,17 +34,17 @@ class StockPicking(models.Model):
         string="Volume",
         compute="_compute_measurement",
         store=True,
-        digits_compute=dp.get_precision('Stock Volume')
+        digits_compute=dp.get_precision("Stock Volume"),
     )
     picking_net_weight = fields.Float(
         string="Net Weight",
         compute="_compute_measurement",
         store=True,
-        digits_compute=dp.get_precision('Stock Weight'),
+        digits_compute=dp.get_precision("Stock Weight"),
     )
     picking_gross_weight = fields.Float(
         string="Gross Weight",
         compute="_compute_measurement",
         store=True,
-        digits_compute=dp.get_precision('Stock Weight')
+        digits_compute=dp.get_precision("Stock Weight"),
     )

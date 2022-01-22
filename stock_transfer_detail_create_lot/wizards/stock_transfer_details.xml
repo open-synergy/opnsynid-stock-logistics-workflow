@@ -1,14 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <openerp>
 <data>
 <record id="stock_transfer_details_view_form" model="ir.ui.view">
     <field name="name">stock.transfer_details Form</field>
     <field name="model">stock.transfer_details</field>
-    <field name="inherit_id" ref="stock.view_stock_enter_transfer_details"/>
+    <field name="inherit_id" ref="stock.view_stock_enter_transfer_details" />
     <field name="arch" type="xml">
         <data>
             <xpath expr="//group/div[@class='oe_grey']" position="after">
-                <button name="button_generate_lot" type="object" string="Generate Lot"/>
+                <button
+                            name="button_generate_lot"
+                            type="object"
+                            string="Generate Lot"
+                        />
             </xpath>
         </data>
     </field>

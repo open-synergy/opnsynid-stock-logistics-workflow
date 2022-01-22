@@ -1,29 +1,28 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2020 OpenSynergy Indonesia
      Copyright 2020 PT. Simetri Sinergi Indonesia
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html). -->
-
 <openerp>
 <data>
 <record id="stock_move_view_form_1" model="ir.ui.view">
     <field name="name">stock.move form - Measurement</field>
     <field name="model">stock.move</field>
-    <field name="inherit_id" ref="stock.view_move_form"/>
+    <field name="inherit_id" ref="stock.view_move_form" />
     <field name="arch" type="xml">
         <xpath expr="//div[@groups='product.group_uos']" position="after">
-            <label for="move_volume"/>
+            <label for="move_volume" />
             <div>
-                <field name="move_volume" class="oe_inline"/>
+                <field name="move_volume" class="oe_inline" />
                 M3
             </div>
-            <label for="move_net_weight"/>
+            <label for="move_net_weight" />
             <div>
-                <field name="move_net_weight" class="oe_inline"/>
+                <field name="move_net_weight" class="oe_inline" />
                 kg
             </div>
-            <label for="move_gross_weight"/>
+            <label for="move_gross_weight" />
             <div>
-                <field name="move_gross_weight" class="oe_inline"/>
+                <field name="move_gross_weight" class="oe_inline" />
                 kg
             </div>
         </xpath>
@@ -33,22 +32,22 @@
 <record id="stock_move_view_form_2" model="ir.ui.view">
     <field name="name">stock.move form - Measurement</field>
     <field name="model">stock.move</field>
-    <field name="inherit_id" ref="stock.view_move_picking_form"/>
+    <field name="inherit_id" ref="stock.view_move_picking_form" />
     <field name="arch" type="xml">
         <xpath expr="//div[@groups='product.group_uos']" position="after">
-            <label for="move_volume"/>
+            <label for="move_volume" />
             <div>
-                <field name="move_volume" class="oe_inline"/>
+                <field name="move_volume" class="oe_inline" />
                 M3
             </div>
-            <label for="move_net_weight"/>
+            <label for="move_net_weight" />
             <div>
-                <field name="move_net_weight" class="oe_inline"/>
+                <field name="move_net_weight" class="oe_inline" />
                 kg
             </div>
-            <label for="move_gross_weight"/>
+            <label for="move_gross_weight" />
             <div>
-                <field name="move_gross_weight" class="oe_inline"/>
+                <field name="move_gross_weight" class="oe_inline" />
                 kg
             </div>
         </xpath>

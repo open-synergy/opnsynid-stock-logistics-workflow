@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <openerp>
     <data noupdate="0">
         <record id="stock_picking_view_form" model="ir.ui.view">
             <field name="name">stock.picking.form</field>
             <field name="model">stock.picking</field>
-            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="inherit_id" ref="stock.view_picking_form" />
             <field name="arch" type="xml">
                 <xpath expr="//button[@name='action_cancel']" position="attributes">
                     <attribute name="invisible">True</attribute>
@@ -15,13 +15,17 @@
                         states="assigned,confirmed,partially_available,draft,waiting"
                         string="Cancel Transfer"
                         type="action"
-                        groups="base.group_user"/>
+                        groups="base.group_user"
+                    />
                 </xpath>
                 <xpath expr="/form/sheet/h1[1]" position="after">
                     <h2 attrs="{'invisible': [('state', '!=', 'cancel')]}">
-                        <label for="cancel_reason_id" string="Cancellation reason:"/>
-                        <field name="cancel_reason_id" class="oe_inline"
-                          options='{"no_open": True}' />
+                        <label for="cancel_reason_id" string="Cancellation reason:" />
+                        <field
+                            name="cancel_reason_id"
+                            class="oe_inline"
+                            options='{"no_open": True}'
+                        />
                     </h2>
                 </xpath>
             </field>

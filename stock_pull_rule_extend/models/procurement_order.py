@@ -2,7 +2,7 @@
 # Copyright 2017 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import models, api
+from openerp import api, models
 
 
 class ProcurementOrder(models.Model):
@@ -36,8 +36,7 @@ class ProcurementOrder(models.Model):
     @api.multi
     def _prepare_product_pull_rule_domain(self, domain):
         self.ensure_one()
-        routes = self.product_id.route_ids + \
-            self.product_id.categ_id.total_route_ids
+        routes = self.product_id.route_ids + self.product_id.categ_id.total_route_ids
         dom = domain + [("route_id", "in", routes.ids)]
         return dom
 

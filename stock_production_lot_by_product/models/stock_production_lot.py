@@ -2,8 +2,7 @@
 # Copyright 2017 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import models, fields, api
-from openerp.exceptions import Warning as UserError
+from openerp import api, fields, models
 
 
 class StockProductionLot(models.Model):
@@ -11,7 +10,7 @@ class StockProductionLot(models.Model):
     _inherit = [
         "stock.production.lot",
         "base.sequence_document",
-        ]
+    ]
 
     @api.model
     def _default_name(self):
@@ -36,7 +35,9 @@ class StockProductionLot(models.Model):
             }
         )
         sequence = result.with_context(ctx)._create_sequence()
-        result.write({
-            "name": sequence,
-        })
+        result.write(
+            {
+                "name": sequence,
+            }
+        )
         return result

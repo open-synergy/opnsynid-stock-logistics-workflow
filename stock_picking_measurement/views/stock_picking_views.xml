@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2020 OpenSynergy Indonesia
      Copyright 2020 PT. Simetri Sinergi Indonesia
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html). -->
@@ -7,24 +7,24 @@
 <record id="stock_picking_view_form" model="ir.ui.view">
     <field name="name">stock.picking form - Measurement</field>
     <field name="model">stock.picking</field>
-    <field name="inherit_id" ref="stock.view_picking_form"/>
+    <field name="inherit_id" ref="stock.view_picking_form" />
     <field name="arch" type="xml">
         <data>
             <xpath expr="//notebook" position="after">
                 <group name="measurement" colspan="4" col="2">
-                    <label for="picking_volume"/>
+                    <label for="picking_volume" />
                     <div>
-                        <field name="picking_volume" class="oe_inline"/>
+                        <field name="picking_volume" class="oe_inline" />
                         M3
                     </div>
-                    <label for="picking_net_weight"/>
+                    <label for="picking_net_weight" />
                     <div>
-                        <field name="picking_net_weight" class="oe_inline"/>
+                        <field name="picking_net_weight" class="oe_inline" />
                         kg
                     </div>
-                    <label for="picking_gross_weight"/>
+                    <label for="picking_gross_weight" />
                     <div>
-                        <field name="picking_gross_weight" class="oe_inline"/>
+                        <field name="picking_gross_weight" class="oe_inline" />
                         kg
                     </div>
                 </group>

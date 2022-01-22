@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <openerp>
     <data>
         <record id="stock_picking_cancel_view_form" model="ir.ui.view">
@@ -11,15 +11,17 @@
                     picking.
                 </p>
                 <group>
-                    <field name="reason_id" widget="selection"/>
+                    <field name="reason_id" widget="selection" />
                 </group>
                 <footer>
-                    <button name="button_confirm"
-                        string="Confirm" type="object"
-                        class="oe_highlight"/>
+                    <button
+                            name="button_confirm"
+                            string="Confirm"
+                            type="object"
+                            class="oe_highlight"
+                        />
                     or
-                    <button string="Cancel" class="oe_link"
-                        special="cancel" />
+                    <button string="Cancel" class="oe_link" special="cancel" />
                 </footer>
             </form>
             </field>
@@ -31,7 +33,7 @@
             <field name="res_model">stock.picking.cancel</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
-            <field name="view_id" ref="stock_picking_cancel_view_form"/>
+            <field name="view_id" ref="stock_picking_cancel_view_form" />
             <field name="target">new</field>
         </record>
     </data>

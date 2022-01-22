@@ -2,7 +2,7 @@
 # Copyright 2019 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import models, fields, api
+from openerp import api, fields, models
 
 
 class StockPicking(models.Model):
@@ -27,19 +27,18 @@ class StockPicking(models.Model):
         uom_id = item.item_id._get_uom_id(document=self)
         pricelist = self._get_processing_pricelist(item=item)
         currency = pricelist.currency_id
-        price = pricelist.price_get(
-            prod_id=item.item_id.product_id.id,
-            qty=qty
-        )[pricelist.id]
+        price = pricelist.price_get(prod_id=item.item_id.product_id.id, qty=qty)[
+            pricelist.id
+        ]
         result = item.item_id._prepare_fulfillment_service(
-            currency=currency,
-            price=price,
-            qty=qty,
-            uom_id=uom_id)
-        result.update({
-            "picking_id": self.id,
-            "partner_id": self.owner_id.id,
-        })
+            currency=currency, price=price, qty=qty, uom_id=uom_id
+        )
+        result.update(
+            {
+                "picking_id": self.id,
+                "partner_id": self.owner_id.id,
+            }
+        )
         return result
 
     @api.multi
@@ -51,10 +50,9 @@ class StockPicking(models.Model):
         obj_service = self.env["stock.fulfillment_service"]
         ptype = self.picking_type_id
         for item in ptype.fulfillment_item_ids.filtered(
-                lambda r: r.item_id.applicable_on == "picking"):
-            obj_service.create(
-                self._prepare_fulfillment_service(item=item)
-            )
+            lambda r: r.item_id.applicable_on == "picking"
+        ):
+            obj_service.create(self._prepare_fulfillment_service(item=item))
 
     @api.multi
     def do_transfer(self):

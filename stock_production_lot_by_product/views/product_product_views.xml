@@ -1,17 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2017 OpenSynergy Indonesia
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
-
 <openerp>
 <data>
 
 <record id="product_product_view_form" model="ir.ui.view">
     <field name="name">Production Lot By Production</field>
     <field name="model">product.product</field>
-    <field name="inherit_id" ref="product.product_normal_form_view"/>
+    <field name="inherit_id" ref="product.product_normal_form_view" />
     <field name="arch" type="xml">
         <xpath expr="//group[@name='lot']" position="inside">
-            <field name="lot_sequence_id"/>
+            <field name="lot_sequence_id" />
         </xpath>
     </field>
 </record>

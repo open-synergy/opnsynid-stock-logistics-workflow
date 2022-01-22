@@ -2,7 +2,7 @@
 # Copyright 2019 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import models, fields, api
+from openerp import api, fields, models
 
 
 class StockPickingManualInvoiceLink(models.TransientModel):
@@ -61,9 +61,15 @@ class StockPickingManualInvoiceLink(models.TransientModel):
     def _get_stock_move_lines(self, picking):
         result = []
         for line in picking.move_lines:
-            result.append((0, 0, {
-                "stock_move_id": line.id,
-            }))
+            result.append(
+                (
+                    0,
+                    0,
+                    {
+                        "stock_move_id": line.id,
+                    },
+                )
+            )
         return result
 
     @api.multi
@@ -76,14 +82,16 @@ class StockPickingManualInvoiceLink(models.TransientModel):
         }
         inv_type = self._map_picking_type_2_invoice_type(picking)
         if partner:
-            result.update({
-                "invoice_id": [
-                    ("partner_id.commercial_partner_id.id", "=", partner.id),
-                    ("state", "in", ["open", "paid"]),
-                    ("picking_ids", "=", False),
-                    ("type", "in", inv_type),
-                ]
-            })
+            result.update(
+                {
+                    "invoice_id": [
+                        ("partner_id.commercial_partner_id.id", "=", partner.id),
+                        ("state", "in", ["open", "paid"]),
+                        ("picking_ids", "=", False),
+                        ("type", "in", inv_type),
+                    ]
+                }
+            )
         return result
 
     @api.model
@@ -175,15 +183,11 @@ class StockPickingManualInvoiceLinkLine(models.TransientModel):
     @api.multi
     def _prepare_stock_move_data(self):
         self.ensure_one()
-        result = {
-            "invoice_line_ids": [(6, 0, [self.invoice_line_id.id])]
-        }
+        result = {"invoice_line_ids": [(6, 0, [self.invoice_line_id.id])]}
         return result
 
     @api.multi
     def _prepare_invoice_line_data(self):
         self.ensure_one()
-        result = {
-            "move_line_ids": [(6, 0, [self.stock_move_id.id])]
-        }
+        result = {"move_line_ids": [(6, 0, [self.stock_move_id.id])]}
         return result

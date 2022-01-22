@@ -2,7 +2,7 @@
 # Copyright 2018 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import models, fields, api, SUPERUSER_ID
+from openerp import SUPERUSER_ID, api, fields, models
 
 
 class StockPickingWave(models.Model):
@@ -13,7 +13,7 @@ class StockPickingWave(models.Model):
         "state",
         "type_id.confirm_group_ids",
         "type_id.done_group_ids",
-        "type_id.cancel_group_ids"
+        "type_id.cancel_group_ids",
     )
     def _compute_policy(self):
         user_id = self.env.user.id
@@ -25,12 +25,9 @@ class StockPickingWave(models.Model):
                 wave.cancel_ok = True
                 continue
 
-            wave.confirm_ok =\
-                self._button_policy(wave_type, "confirm")
-            wave.done_ok =\
-                self._button_policy(wave_type, "done")
-            wave.cancel_ok =\
-                self._button_policy(wave_type, "cancel")
+            wave.confirm_ok = self._button_policy(wave_type, "confirm")
+            wave.done_ok = self._button_policy(wave_type, "done")
+            wave.cancel_ok = self._button_policy(wave_type, "cancel")
 
     @api.model
     def _button_policy(self, picking_wave_type, button_type):
@@ -46,7 +43,7 @@ class StockPickingWave(models.Model):
             button_group_ids = picking_wave_type.cancel_group_ids.ids
 
         if button_group_ids:
-            if (set(button_group_ids) & set(group_ids)):
+            if set(button_group_ids) & set(group_ids):
                 result = True
             else:
                 result = False

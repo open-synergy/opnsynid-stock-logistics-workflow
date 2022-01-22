@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <openerp>
     <data>
         <record id="stock_picking_wave_type_view_form" model="ir.ui.view">
@@ -13,9 +13,16 @@
                             <field name="warehouse_id" />
                         </group>
                         <notebook>
-                            <page name="page_allowed_picking_type" string="Allowed Picking Type" groups="base.group_system">
+                            <page
+                                name="page_allowed_picking_type"
+                                string="Allowed Picking Type"
+                                groups="base.group_system"
+                            >
                                 <group name="grp_allowed_picking_type">
-                                    <field  name="allowed_picking_type_ids" nolabel="1"/>
+                                    <field
+                                        name="allowed_picking_type_ids"
+                                        nolabel="1"
+                                    />
                                 </group>
                             </page>
                         </notebook>
@@ -42,11 +49,12 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem 
+        <menuitem
             id="stock_picking_wave_type_view_menu"
             name="Picking Waves Type"
             parent="stock.menu_stock_configuration"
             action="stock_picking_wave_type_view_action"
-            sequence="100"/>
+            sequence="100"
+        />
     </data>
 </openerp>

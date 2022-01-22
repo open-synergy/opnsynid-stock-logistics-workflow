@@ -2,7 +2,7 @@
 # Copyright 2017 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import models, api
+from openerp import api, models
 
 
 class StockMove(models.Model):
@@ -45,8 +45,7 @@ class StockMove(models.Model):
             rules = self._find_wh_related_push_rule(domain)
             if rules == 0:
                 domain += [("route_id", "=", False)]
-                rules = obj_rule.search(
-                    domain, order="sequence")
+                rules = obj_rule.search(domain, order="sequence")
         if len(rules) > 0:
             rule = rules[0]
         else:
@@ -57,8 +56,7 @@ class StockMove(models.Model):
     def _find_product_related_push_rule(self, domain):
         self.ensure_one()
         obj_rule = self.env["stock.location.path"]
-        routes = self.product_id.route_ids + \
-            self.product_id.categ_id.total_route_ids
+        routes = self.product_id.route_ids + self.product_id.categ_id.total_route_ids
         dom = domain + [("route_id", "in", routes.ids)]
         return obj_rule.search(dom)
 
