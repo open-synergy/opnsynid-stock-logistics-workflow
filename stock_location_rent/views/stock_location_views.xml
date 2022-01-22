@@ -1,21 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2022 OpenSynergy Indonesia
      Copyright 2022 PT. Simetri Sinergi Indonesia
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
-
 <openerp>
 <data>
 
 <record id="stock_location_view_form" model="ir.ui.view">
     <field name="name">stock.location.inherit.rent.form</field>
     <field name="model">stock.location</field>
-    <field name="inherit_id" ref="stock.view_location_form"/>
+    <field name="inherit_id" ref="stock.view_location_form" />
     <field name="arch" type="xml">
         <xpath expr="//form/group/group[last()]" position="after">
-            <group name="grp_stock_location_rent" colspan="4" col="2" string="Location Rent">
-                <field name="rent_product_id"/>
-                <field name="income_account_id"/>
-                <field name="deffered_revenue_account_id"/>
+            <group
+                        name="grp_stock_location_rent"
+                        colspan="4"
+                        col="2"
+                        string="Location Rent"
+                    >
+                <field name="rent_product_id" />
+                <field name="income_account_id" />
+                <field name="deffered_revenue_account_id" />
             </group>
         </xpath>
     </field>

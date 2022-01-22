@@ -34,10 +34,10 @@
             <header />
             <sheet>
                 <div
-                    class="oe_right oe_button_box"
-                    style="width: 300px;"
-                    name="buttons"
-                />
+                            class="oe_right oe_button_box"
+                            style="width: 300px;"
+                            name="buttons"
+                        />
                 <group name="group_1" colspan="4" col="2">
                     <field name="code" />
                     <field name="name" />
@@ -56,7 +56,10 @@
     </field>
 </record>
 
-<record id="stock_location_rent_payment_term_period_action" model="ir.actions.act_window">
+<record
+            id="stock_location_rent_payment_term_period_action"
+            model="ir.actions.act_window"
+        >
     <field name="name">Location Rent Payment Term Period</field>
     <field name="type">ir.actions.act_window</field>
     <field name="res_model">stock.location_rent_payment_term_period</field>
@@ -65,11 +68,11 @@
 </record>
 
 <menuitem
-    id="stock_location_rent_payment_term_period_menu"
-    name="Location Rent Payment Term Period"
-    parent="stock_location_rent_config_menu"
-    action="stock_location_rent_payment_term_period_action"
-    sequence="11"
-/>
+            id="stock_location_rent_payment_term_period_menu"
+            name="Location Rent Payment Term Period"
+            parent="stock_location_rent_config_menu"
+            action="stock_location_rent_payment_term_period_action"
+            sequence="11"
+        />
 </data>
 </openerp>

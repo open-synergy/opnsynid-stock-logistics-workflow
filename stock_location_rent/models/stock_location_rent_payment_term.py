@@ -3,7 +3,7 @@
 # Copyright 2022 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import api, fields, models, _
+from openerp import _, api, fields, models
 from openerp.exceptions import Warning as UserError
 
 
@@ -91,12 +91,13 @@ class StockLocationRentPaymentTerm(models.Model):
         rent = self.rent_id
         obj_account_invoice = self.env["account.invoice"]
         invoice = obj_account_invoice.create(self._prepare_invoice_data())
-        self.write({
-            "invoice_id": invoice.id,
-        })
+        self.write(
+            {
+                "invoice_id": invoice.id,
+            }
+        )
         for detail in rent.detail_ids:
-            detail._create_invoice_line(
-                invoice, self.date_start, self.date_end)
+            detail._create_invoice_line(invoice, self.date_start, self.date_end)
         invoice.button_reset_taxes()
         return True
 
