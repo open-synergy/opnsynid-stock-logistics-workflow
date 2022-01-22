@@ -3,9 +3,10 @@
 # Copyright 2022 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import _, api, fields, models
-from datetime import date, datetime
+from datetime import datetime
+
 from dateutil.relativedelta import relativedelta
+from openerp import _, api, fields, models
 from openerp.exceptions import Warning as UserError
 
 
@@ -140,15 +141,16 @@ class StockLocationRent(models.Model):
         },
     )
 
-    @api.depends(
-        "currency_id",
-        "payment_term_period_id"
-    )
+    @api.depends("currency_id", "payment_term_period_id")
     def _compute_allowed_pricelist_ids(self):
         obj_pricelist = self.env["product.pricelist"]
         for record in self:
             result = []
-            if record.currency_id and record.payment_term_period_id and record.payment_term_period_id.allowed_pricelist_ids:
+            if (
+                record.currency_id
+                and record.payment_term_period_id
+                and record.payment_term_period_id.allowed_pricelist_ids
+            ):
                 allowed_pricelists = record.payment_term_period_id.allowed_pricelist_ids
                 criteria = [
                     ("currency_id", "=", record.currency_id.id),
@@ -239,8 +241,7 @@ class StockLocationRent(models.Model):
             res = []
             if document.type_id and document.date_start and document.date_end:
 
-                payment_term_period_ids = \
-                    document.type_id.payment_term_period_ids
+                payment_term_period_ids = document.type_id.payment_term_period_ids
 
                 lst_type = ["daily"]
                 if document.daily_period == 0:
@@ -254,8 +255,9 @@ class StockLocationRent(models.Model):
                         ("id", "in", payment_term_period_ids.ids),
                         ("type", "in", lst_type),
                     ]
-                    payment_term_period_ids = \
-                        obj_payment_term_period.search(criteria_payment_term)
+                    payment_term_period_ids = obj_payment_term_period.search(
+                        criteria_payment_term
+                    )
 
                     if payment_term_period_ids:
                         for term_period in payment_term_period_ids:
@@ -265,11 +267,14 @@ class StockLocationRent(models.Model):
                                 check_number = document.yearly_period * 12
                                 check_number += document.monthly_period
                             elif term_period.type == "daily":
-                                dt_start = datetime.strptime(document.date_start, format)
+                                dt_start = datetime.strptime(
+                                    document.date_start, format
+                                )
                                 dt_end = datetime.strptime(document.date_end, format)
                                 check_number = (dt_end - dt_start).days
-                            check_period_number = \
+                            check_period_number = (
                                 check_number % term_period.payment_term_period_number
+                            )
                             if check_period_number == 0 and check_number != 0:
                                 res.append(term_period.id)
 
@@ -320,6 +325,7 @@ class StockLocationRent(models.Model):
             ],
         },
     )
+
     @api.multi
     @api.depends(
         "payment_term_period_id",
@@ -329,24 +335,28 @@ class StockLocationRent(models.Model):
     def _compute_invoice_number(self):
         for document in self:
             invoice_number = 0
-            if document.payment_term_period_id and document.date_start and document.date_end:
-                payment_term_period_number = \
+            if (
+                document.payment_term_period_id
+                and document.date_start
+                and document.date_end
+            ):
+                payment_term_period_number = (
                     document.payment_term_period_id.payment_term_period_number
-                period_type = \
-                    document.payment_term_period_id.type
+                )
+                period_type = document.payment_term_period_id.type
                 format = "%Y-%m-%d"
 
                 dt_start = datetime.strptime(document.date_start, format)
                 dt_end = datetime.strptime(document.date_end, format)
                 rent_days = (dt_end - dt_start).days
                 if period_type == "yearly":
-                    conv_days = (rent_days / 365)
+                    conv_days = rent_days / 365
                 elif period_type == "monthly":
                     r_months = relativedelta(dt_end, dt_start)
-                    conv_days = r_months.months + (12*r_months.years)
+                    conv_days = r_months.months + (12 * r_months.years)
                 else:
-                    conv_days = (rent_days / 1)
-                invoice_number = (conv_days / payment_term_period_number)
+                    conv_days = rent_days / 1
+                invoice_number = conv_days / payment_term_period_number
             document.invoice_number = invoice_number
 
     invoice_number = fields.Integer(
@@ -366,43 +376,58 @@ class StockLocationRent(models.Model):
             ],
         },
     )
+
     @api.depends(
-        "detail_ids.price_unit",
-        "detail_ids.tax_ids",
+        "amount_before_tax",
+        "amount_tax",
+        "amount_after_tax",
     )
     @api.multi
-    def _compute_amount_invoice(self):
+    def _compute_total_invoice(self):
         for document in self:
-            document.amount_before_tax = 0.0
-            document.amount_tax = 0.0
-            document.amount_after_tax = 0.0
+            document.total_invoice_before_tax = (
+                document.amount_before_tax * document.invoice_number
+            )
+            document.total_invoice_tax = document.amount_tax * document.invoice_number
+            document.total_invoice_after_tax = (
+                document.amount_after_tax * document.invoice_number
+            )
 
-    amount_invoice_before_tax = fields.Float(
-        string="Invoice Before Tax",
-        compute="_compute_amount_invoice",
+    total_invoice_before_tax = fields.Float(
+        string="Total Invoice Before Tax",
+        compute="_compute_total_invoice",
         store=True,
     )
-    amount_invoice_tax = fields.Float(
-        string="Invoice Tax",
-        compute="_compute_amount_invoice",
+    total_invoice_tax = fields.Float(
+        string="Total Invoice Tax",
+        compute="_compute_total_invoice",
         store=True,
     )
-    amount_invoice_after_tax = fields.Float(
-        string="Invoice After Tax",
-        compute="_compute_amount_invoice",
+    total_invoice_after_tax = fields.Float(
+        string="Total Invoice After Tax",
+        compute="_compute_total_invoice",
         store=True,
     )
 
     @api.depends(
-        "detail_ids.price_unit",
-        "detail_ids.tax_ids",
+        "detail_ids.amount_before_tax",
+        "detail_ids.amount_tax",
+        "detail_ids.amount_after_tax",
     )
     @api.multi
     def _compute_amount(self):
         for document in self:
-            document.amount_before_tax = 0.0
-            document.amount_tax = 0.0
-            document.amount_after_tax = 0.0
+            amount_before_tax = 0.0
+            amount_tax = 0.0
+            amount_after_tax = 0.0
+            if document.detail_ids:
+                for detail in document.detail_ids:
+                    amount_before_tax += detail.amount_before_tax
+                    amount_tax += detail.amount_tax
+                    amount_after_tax += detail.amount_after_tax
+            document.amount_before_tax = amount_before_tax
+            document.amount_tax = amount_tax
+            document.amount_after_tax = amount_after_tax
 
     amount_before_tax = fields.Float(
         string="Amount Before Tax",
@@ -583,7 +608,6 @@ class StockLocationRent(models.Model):
     def onchange_pricelist_id(self):
         self.pricelist_id = False
 
-
     @api.multi
     def action_create_payment_schedule(self):
         for document in self:
@@ -634,7 +658,7 @@ class StockLocationRent(models.Model):
     def _get_payment_schedule_date_invoice(self, date):
         self.ensure_one()
         if self.invoice_method == "advance":
-            factor = relativedelta(days=(self.date_invoice_offset*-1))
+            factor = relativedelta(days=(self.date_invoice_offset * -1))
         else:
             factor = relativedelta(days=self.date_invoice_offset)
 
@@ -656,13 +680,16 @@ class StockLocationRent(models.Model):
 
         if self.payment_term_period_id.type == "daily":
             add = relativedelta(
-                days=self.payment_term_period_id.payment_term_period_number)
+                days=self.payment_term_period_id.payment_term_period_number
+            )
         elif self.payment_term_period_id.type == "monthly":
             add = relativedelta(
-                months=self.payment_term_period_id.payment_term_period_number)
+                months=self.payment_term_period_id.payment_term_period_number
+            )
         else:
             add = relativedelta(
-                years=self.payment_term_period_id.payment_term_period_number)
+                years=self.payment_term_period_id.payment_term_period_number
+            )
         dt_date = fields.Date.from_string(date)
         date_end = dt_date + add
         return fields.Date.to_string(date_end)
@@ -804,8 +831,8 @@ class StockLocationRent(models.Model):
         return result
 
     @api.constrains(
-      "date_start",
-      "date_end",
+        "date_start",
+        "date_end",
     )
     def _check_tanggal(self):
         for record in self:
@@ -814,10 +841,7 @@ class StockLocationRent(models.Model):
                     msg_err = _("Date Start cannot be greater than Date End")
                     raise UserError(msg_err)
 
-    @api.constrains(
-        "state",
-        "payment_term_ids"
-    )
+    @api.constrains("state", "payment_term_ids")
     def _check_number_of_payment_term(self):
         msg_err = _("No payment terms")
         for record in self:
@@ -839,7 +863,11 @@ class StockLocationRent(models.Model):
         self.ensure_one()
         return [
             ("rent_id", "=", self.id),
-            ("state", "=", "invoiced",)
+            (
+                "state",
+                "=",
+                "invoiced",
+            ),
         ]
 
     @api.multi

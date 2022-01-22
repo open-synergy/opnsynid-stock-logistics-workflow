@@ -2,8 +2,7 @@
 # Copyright 2022 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import _, api, fields, models
-from openerp.exceptions import Warning as UserError, ValidationError
+from openerp import fields, models
 
 
 class StockLocationRentPaymentTermPeriod(models.Model):

@@ -34,10 +34,10 @@
             <header />
             <sheet>
                 <div
-                    class="oe_right oe_button_box"
-                    style="width: 300px;"
-                    name="buttons"
-                />
+                            class="oe_right oe_button_box"
+                            style="width: 300px;"
+                            name="buttons"
+                        />
                 <group name="group_1" colspan="4" col="2">
                     <field name="code" />
                     <field name="name" />
@@ -57,15 +57,30 @@
                     </page>
                     <page name="page_allowed_pricelist" string="Pricelists">
                         <group name="group_allowed_pricelist" colspan="4" col="2">
-                            <field name="allowed_yearly_pricelist_ids" widget="many2many_tags" />
-                            <field name="allowed_monthly_pricelist_ids" widget="many2many_tags" />
-                            <field name="allowed_daily_pricelist_ids" widget="many2many_tags" />
+                            <field
+                                        name="allowed_yearly_pricelist_ids"
+                                        widget="many2many_tags"
+                                    />
+                            <field
+                                        name="allowed_monthly_pricelist_ids"
+                                        widget="many2many_tags"
+                                    />
+                            <field
+                                        name="allowed_daily_pricelist_ids"
+                                        widget="many2many_tags"
+                                    />
                         </group>
                     </page>
                     <page name="page_allowed_accounting" string="Accountings">
                         <group name="group_allowed_accounting" colspan="4" col="2">
-                            <field name="allowed_receivable_journal_ids" widget="many2many_tags" />
-                            <field name="allowed_receivable_account_ids" widget="many2many_tags" />
+                            <field
+                                        name="allowed_receivable_journal_ids"
+                                        widget="many2many_tags"
+                                    />
+                            <field
+                                        name="allowed_receivable_account_ids"
+                                        widget="many2many_tags"
+                                    />
                         </group>
                     </page>
                     <page name="workflow_policy" string="Workflow Policy">
@@ -75,7 +90,10 @@
                             <field name="terminate_grp_ids" widget="many2many_tags" />
                             <field name="cancel_grp_ids" widget="many2many_tags" />
                             <field name="restart_grp_ids" widget="many2many_tags" />
-                            <field name="restart_validation_grp_ids" widget="many2many_tags" />
+                            <field
+                                        name="restart_validation_grp_ids"
+                                        widget="many2many_tags"
+                                    />
                         </group>
                     </page>
                     <page name="note" string="Note">
@@ -96,11 +114,11 @@
 </record>
 
 <menuitem
-    id="stock_location_rent_type_menu"
-    name="Location Rent Types"
-    parent="stock_location_rent_config_menu"
-    action="stock_location_rent_type_action"
-    sequence="10"
-/>
+            id="stock_location_rent_type_menu"
+            name="Location Rent Types"
+            parent="stock_location_rent_config_menu"
+            action="stock_location_rent_type_action"
+            sequence="10"
+        />
 </data>
 </openerp>
