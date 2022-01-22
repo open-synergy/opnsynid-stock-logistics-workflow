@@ -2,9 +2,10 @@
 # Copyright 2018 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import models, fields, api
-from dateutil.relativedelta import relativedelta
 from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
+from openerp import api, fields, models
 
 
 class StockPickingWaveType(models.Model):
@@ -77,6 +78,5 @@ class StockPickingWaveType(models.Model):
         hour_offset = int(getattr(self, offset_field_name))
         minute_offset = int((getattr(self, offset_field_name) % 1) * 60.0)
 
-        result = anchor + \
-            relativedelta(hours=+hour_offset, minutes=+minute_offset)
+        result = anchor + relativedelta(hours=+hour_offset, minutes=+minute_offset)
         return result.strftime("%Y-%m-%d %H:%M:%Y")

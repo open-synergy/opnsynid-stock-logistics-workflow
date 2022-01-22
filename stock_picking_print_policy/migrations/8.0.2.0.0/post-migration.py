@@ -2,8 +2,8 @@
 # Copyright 2019 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+from openerp import SUPERUSER_ID, api
 from openupgradelib import openupgrade
-from openerp import api, SUPERUSER_ID
 
 
 @openupgrade.migrate()
@@ -14,4 +14,5 @@ def migrate(cr, version):
             cr,
             """
             DROP TABLE stock_picking_type_print_policy CASCADE
-            """)
+            """,
+        )

@@ -1,16 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <openerp>
 <data>
 <record id="stock_picking_view_1_form" model="ir.ui.view">
     <field name="name">Stock Picking Policy Form</field>
     <field name="model">stock.picking</field>
-    <field name="inherit_id" ref="stock_split_picking.view_picking_form"/>
+    <field name="inherit_id" ref="stock_split_picking.view_picking_form" />
     <field name="arch" type="xml">
         <data>
             <xpath expr="//button[@name='split_process']" position="attributes">
-                <attribute name="groups"/>
-                <attribute name="attrs">{'invisible':['|',('state','not in',['draft','confirmed','assigned','partially_available']),('split_ok','=',False)]}</attribute>
-                <attribute name="states"/>
+                <attribute name="groups" />
+                <attribute
+                            name="attrs"
+                        >{'invisible':['|',('state','not in',['draft','confirmed','assigned','partially_available']),('split_ok','=',False)]}</attribute>
+                <attribute name="states" />
             </xpath>
         </data>
     </field>
@@ -19,11 +21,11 @@
 <record id="stock_picking_view_2_form" model="ir.ui.view">
     <field name="name">Stock Picking Policy Form</field>
     <field name="model">stock.picking</field>
-    <field name="inherit_id" ref="stock_picking_policy.stock_picking_view_form"/>
+    <field name="inherit_id" ref="stock_picking_policy.stock_picking_view_form" />
     <field name="arch" type="xml">
         <data>
             <xpath expr="//field[@name='unreserve_ok']" position="after">
-                <field name="split_ok"/>
+                <field name="split_ok" />
             </xpath>
         </data>
     </field>

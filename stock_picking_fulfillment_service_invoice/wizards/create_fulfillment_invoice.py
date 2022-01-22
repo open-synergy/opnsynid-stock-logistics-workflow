@@ -2,7 +2,7 @@
 # Copyright 2019 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import models, fields, api
+from openerp import api, fields, models
 
 
 class StockCreateFulfillmentInvoice(models.TransientModel):
@@ -73,15 +73,15 @@ class StockCreateFulfillmentInvoice(models.TransientModel):
         obj_invoice_line = self.env["account.invoice.line"]
         invoices = {}
         for line in self.fulfillment_service_ids.filtered(
-                lambda r: r.currency_id.id == self.currency_id.id and
-                not r.invoice_line_id):
+            lambda r: r.currency_id.id == self.currency_id.id and not r.invoice_line_id
+        ):
             invoice_id = invoices.get(line.partner_id.id, False)
             if not invoice_id:
-                invoice = obj_invoice.create(
-                    self._prepare_invoice(line.partner_id))
+                invoice = obj_invoice.create(self._prepare_invoice(line.partner_id))
                 invoices[line.partner_id.id] = invoice.id
             inv_line = obj_invoice_line.create(
-                self._prepare_invoice_line(invoice, line))
+                self._prepare_invoice_line(invoice, line)
+            )
             line.write({"invoice_line_id": inv_line.id})
 
     @api.multi
@@ -97,8 +97,7 @@ class StockCreateFulfillmentInvoice(models.TransientModel):
     @api.multi
     def _prepare_invoice_line(self, invoice, fulfillment_service):
         self.ensure_one()
-        account_id = fulfillment_service.item_id.product_id.\
-            _get_processing_account_id()
+        account_id = fulfillment_service.item_id.product_id._get_processing_account_id()
         return {
             "invoice_id": invoice.id,
             "name": fulfillment_service.name,

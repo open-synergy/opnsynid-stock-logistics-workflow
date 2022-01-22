@@ -1,16 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <openerp>
 <data>
 <record id="stock_picking_view_1_form" model="ir.ui.view">
     <field name="name">Stock Picking Policy Form</field>
     <field name="model">stock.picking</field>
-    <field name="inherit_id" ref="stock_picking_back2draft.view_picking_form_reopen"/>
+    <field name="inherit_id" ref="stock_picking_back2draft.view_picking_form_reopen" />
     <field name="arch" type="xml">
         <data>
             <xpath expr="//button[@name='action_back_to_draft']" position="attributes">
-                <attribute name="groups"/>
-                <attribute name="attrs">{'invisible':['|',('state','!=','cancel'),('back2draft_ok','=',False)]}</attribute>
-                <attribute name="states"/>
+                <attribute name="groups" />
+                <attribute
+                            name="attrs"
+                        >{'invisible':['|',('state','!=','cancel'),('back2draft_ok','=',False)]}</attribute>
+                <attribute name="states" />
             </xpath>
         </data>
     </field>
@@ -19,11 +21,11 @@
 <record id="stock_picking_view_2_form" model="ir.ui.view">
     <field name="name">Stock Picking Policy Form</field>
     <field name="model">stock.picking</field>
-    <field name="inherit_id" ref="stock_picking_policy.stock_picking_view_form"/>
+    <field name="inherit_id" ref="stock_picking_policy.stock_picking_view_form" />
     <field name="arch" type="xml">
         <data>
             <xpath expr="//field[@name='unreserve_ok']" position="after">
-                <field name="back2draft_ok"/>
+                <field name="back2draft_ok" />
             </xpath>
         </data>
     </field>

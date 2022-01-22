@@ -2,7 +2,7 @@
 # Copyright 2018 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import models, fields, api
+from openerp import api, fields, models
 from openerp.exceptions import Warning as UserError
 from openerp.tools.translate import _
 
@@ -29,15 +29,11 @@ class StockPickingWave(models.Model):
         },
     )
 
-    @api.constrains(
-        "date_start", "date_end")
+    @api.constrains("date_start", "date_end")
     def _check_wave_interval(self):
-        strWarning1 = _(
-            "Date End must be greater than Date Start")
-        strWarning2 = _(
-            "Date Start required")
-        strWarning3 = _(
-            "Date End required")
+        strWarning1 = _("Date End must be greater than Date Start")
+        strWarning2 = _("Date Start required")
+        strWarning3 = _("Date End required")
 
         if self.date_start and not self.date_end:
             raise UserError(strWarning3)

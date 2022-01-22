@@ -2,9 +2,9 @@
 # Copyright 2017 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import models, api
-from openerp.tools.translate import _
+from openerp import api, models
 from openerp.exceptions import Warning as UserError
+from openerp.tools.translate import _
 
 
 class StockReturnPicking(models.TransientModel):
@@ -41,12 +41,13 @@ class StockReturnPicking(models.TransientModel):
         obj_move = self.env["stock.move"]
         move_to_unreserve = obj_move
         for move in picking.move_lines:
-            to_check_moves = [
-                move.move_dest_id] if move.move_dest_id.id else []
+            to_check_moves = [move.move_dest_id] if move.move_dest_id.id else []
             while to_check_moves:
                 current_move = to_check_moves.pop()
-                if current_move.state not in ("done", "cancel") and \
-                        current_move.reserved_quant_ids:
+                if (
+                    current_move.state not in ("done", "cancel")
+                    and current_move.reserved_quant_ids
+                ):
                     move_to_unreserve += current_move
                 criteria = [
                     ("split_from", "=", current_move.id),
@@ -62,9 +63,11 @@ class StockReturnPicking(models.TransientModel):
     @api.multi
     def _prepare_new_picking(self, picking):
         self.ensure_one()
-        pick_type_id = picking.picking_type_id.return_picking_type_id and \
-            picking.picking_type_id.return_picking_type_id.id or \
-            picking.picking_type_id.id
+        pick_type_id = (
+            picking.picking_type_id.return_picking_type_id
+            and picking.picking_type_id.return_picking_type_id.id
+            or picking.picking_type_id.id
+        )
         res = {
             "move_lines": [],
             "picking_type_id": pick_type_id,
@@ -82,8 +85,10 @@ class StockReturnPickingLine(models.TransientModel):
         move = self.move_id
         new_qty = self.quantity
         if new_qty:
-            if move.origin_returned_move_id.move_dest_id.id and \
-                    move.origin_returned_move_id.state != "cancel":
+            if (
+                move.origin_returned_move_id.move_dest_id.id
+                and move.origin_returned_move_id.state != "cancel"
+            ):
                 move_dest_id = move.origin_returned_move_id.move_dest_id.id
             else:
                 move_dest_id = False

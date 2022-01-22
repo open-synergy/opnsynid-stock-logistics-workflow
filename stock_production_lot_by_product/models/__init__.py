@@ -6,4 +6,4 @@ from . import (
     product_category,
     product_product,
     stock_production_lot,
-    )
+)

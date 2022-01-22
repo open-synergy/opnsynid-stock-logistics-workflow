@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2019 OpenSynergy Indonesia
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 <openerp>
@@ -9,16 +9,28 @@
     <field name="arch" type="xml">
         <form>
             <group name="header" colspan="4" col="2">
-                <field name="date_invoice"/>
-                <field name="currency_id"/>
-                <field name="allowed_journal_ids" widget="many2many_tags" invisible="1"/>
-                <field name="journal_id" domain="[('id','in',allowed_journal_ids[0][2])]"/>
-                <field name="fulfillment_service_ids" invisible="1"/>
+                <field name="date_invoice" />
+                <field name="currency_id" />
+                <field
+                            name="allowed_journal_ids"
+                            widget="many2many_tags"
+                            invisible="1"
+                        />
+                <field
+                            name="journal_id"
+                            domain="[('id','in',allowed_journal_ids[0][2])]"
+                        />
+                <field name="fulfillment_service_ids" invisible="1" />
             </group>
             <footer>
-                <button name="action_create_invoice" string="Create Invoice" type="object" class="oe_highlight"/>
+                <button
+                            name="action_create_invoice"
+                            string="Create Invoice"
+                            type="object"
+                            class="oe_highlight"
+                        />
                 Or
-                <button special="cancel" string="Cancel"/>
+                <button special="cancel" string="Cancel" />
             </footer>
         </form>
     </field>
@@ -37,7 +49,10 @@
     <field name="model_id" ref="model_stock_fulfillment_service" />
     <field name="name">Create Fulfillment Invoice</field>
     <field name="key2">client_action_multi</field>
-    <field name="value" eval="'ir.actions.act_window,' + str(ref('stock_create_fulfillment_invoice_action'))"/>
+    <field
+                name="value"
+                eval="'ir.actions.act_window,' + str(ref('stock_create_fulfillment_invoice_action'))"
+            />
     <field name="key">action</field>
     <field name="model">stock.fulfillment_service</field>
 </record>

@@ -2,23 +2,19 @@
 # Copyright 2018 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import models, fields, api
+from openerp import api, fields, models
 
 
 class StockLocation(models.Model):
     _inherit = "stock.location"
 
-    @api.depends(
-        "allowed_group_inventory_ids",
-        "allowed_user_inventory_ids")
+    @api.depends("allowed_group_inventory_ids", "allowed_user_inventory_ids")
     def _compute_all_user_inventory_ids(self):
         obj_res_users = self.env["res.users"]
         for location in self:
             users = location.allowed_user_inventory_ids
             group_ids = location.allowed_group_inventory_ids.ids
-            criteria = [
-                ("groups_id", "in", group_ids)
-            ]
+            criteria = [("groups_id", "in", group_ids)]
             users += obj_res_users.search(criteria)
             location.all_user_inventory_ids = users
 

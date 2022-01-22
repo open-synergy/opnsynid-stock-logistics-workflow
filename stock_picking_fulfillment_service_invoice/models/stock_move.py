@@ -2,7 +2,7 @@
 # Copyright 2019 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import models, fields, api
+from openerp import api, fields, models
 
 
 class StockMove(models.Model):
@@ -24,10 +24,9 @@ class StockMove(models.Model):
         obj_service = self.env["stock.fulfillment_service"]
         ptype = self.picking_type_id
         for item in ptype.fulfillment_item_ids.filtered(
-                lambda r: r.item_id.applicable_on == "move"):
-            obj_service.create(
-                self._prepare_fulfillment_service(item=item)
-            )
+            lambda r: r.item_id.applicable_on == "move"
+        ):
+            obj_service.create(self._prepare_fulfillment_service(item=item))
 
     @api.multi
     def _get_processing_pricelist(self, item):
@@ -41,10 +40,9 @@ class StockMove(models.Model):
         uom_id = item.item_id._get_uom_id(document=self)
         pricelist = self._get_processing_pricelist(item=item)
         currency = pricelist.currency_id
-        price = pricelist.price_get(
-            prod_id=item.item_id.product_id.id,
-            qty=qty
-        )[pricelist.id]
+        price = pricelist.price_get(prod_id=item.item_id.product_id.id, qty=qty)[
+            pricelist.id
+        ]
         return {
             "move_id": self.id,
             "partner_id": self.restrict_partner_id.id,

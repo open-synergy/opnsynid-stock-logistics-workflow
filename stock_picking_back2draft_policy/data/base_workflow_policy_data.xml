@@ -1,13 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2019 OpenSynergy Indonesia
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
-
 <openerp>
     <data>
-        <record id="base_workflow_line_stock_picking_back2draft" model="base.workflow_policy_line">
-            <field name="workflow_id" ref="stock_picking_policy.base_workflow_stock_picking"/>
-            <field name="field_id" search="[('model_id.model','=','stock.picking'),('name','=','back2draft_ok')]"/>
-            <field name="python_code">result = document.picking_type_id.back2draft_group_ids.ids</field>
+        <record
+            id="base_workflow_line_stock_picking_back2draft"
+            model="base.workflow_policy_line"
+        >
+            <field
+                name="workflow_id"
+                ref="stock_picking_policy.base_workflow_stock_picking"
+            />
+            <field
+                name="field_id"
+                search="[('model_id.model','=','stock.picking'),('name','=','back2draft_ok')]"
+            />
+            <field
+                name="python_code"
+            >result = document.picking_type_id.back2draft_group_ids.ids</field>
         </record>
     </data>
 </openerp>

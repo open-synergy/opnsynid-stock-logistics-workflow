@@ -2,15 +2,12 @@
 # Copyright 2017 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import models, api, fields
+from openerp import api, fields, models
 
 
 class StockPicking(models.Model):
     _name = "stock.picking"
-    _inherit = [
-        "stock.picking",
-        "base.workflow_policy_object"
-    ]
+    _inherit = ["stock.picking", "base.workflow_policy_object"]
 
     @api.multi
     @api.depends(

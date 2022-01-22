@@ -2,7 +2,7 @@
 # Copyright 2018 OpenSynergy Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import models, api, fields, SUPERUSER_ID
+from openerp import SUPERUSER_ID, api, fields, models
 
 
 class StockInventory(models.Model):
@@ -16,14 +16,13 @@ class StockInventory(models.Model):
         for inventory in self:
             if inventory.location_id:
                 location = inventory.location_id
-                for policy in location.\
-                        _get_inventory_adjustment_button_policy_map():
+                for policy in location._get_inventory_adjustment_button_policy_map():
                     if self.env.user.id == SUPERUSER_ID:
                         result = True
                     else:
-                        result = location.\
-                            _get_inventory_adjustment_button_policy(
-                                policy[1])
+                        result = location._get_inventory_adjustment_button_policy(
+                            policy[1]
+                        )
                     setattr(
                         inventory,
                         policy[0],
