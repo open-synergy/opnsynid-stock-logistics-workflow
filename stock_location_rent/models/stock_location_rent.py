@@ -28,7 +28,9 @@ class StockLocationRent(models.Model):
     def _default_company_id(self):
         return self.env.user.company_id.id
 
-    @api.multi
+    @api.depends(
+        "type_id",
+    )
     def _compute_policy(self):
         _super = super(StockLocationRent, self)
         _super._compute_policy()
