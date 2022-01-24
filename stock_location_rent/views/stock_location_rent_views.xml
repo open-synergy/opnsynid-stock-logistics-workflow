@@ -152,9 +152,13 @@
             <field name="user_id" />
             <field name="date_start" />
             <field name="date_end" />
-            <field name="amount_before_tax" string="Untaxed" sum="Total Untaxed" />
-            <field name="amount_tax" string="Tax" sum="Total Tax" />
-            <field name="amount_after_tax" string="Total" sum="Total" />
+            <field
+                        name="total_invoice_before_tax"
+                        string="Untaxed"
+                        sum="Total Untaxed"
+                    />
+            <field name="total_invoice_tax" string="Tax" sum="Total Tax" />
+            <field name="total_invoice_after_tax" string="Total" sum="Total" />
             <field name="state" />
         </tree>
     </field>
