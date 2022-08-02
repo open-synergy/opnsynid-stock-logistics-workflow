@@ -1,8 +1,8 @@
 # Copyright 2015-2016 Agile Business Group (<http://www.agilebg.com>)
 # Copyright 2015 BREMSKERL-REIBBELAGWERKE EMMERLING GmbH & Co. KG
 #    Author Marco Dieckhoff
-# Copyright 2021 OpenSynergy Indonesia
-# Copyright 2021 PT. Simetri Sinergi Indonesia
+# Copyright 2022 OpenSynergy Indonesia
+# Copyright 2022 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import _, api, fields, models
@@ -25,16 +25,31 @@ class StockMove(models.Model):
                     _("You can not process an actual " "movement date in the future.")
                 )
 
-    @api.multi
-    def _action_done(self):
+    def _update_svl_backdate(self, move):
+        query = """
+            UPDATE public.stock_valuation_layer
+                SET create_date = %(create_date)s
+            WHERE id IN %(svl_ids)s
+        """
+        params = {
+            "create_date": move.date_backdating,
+            "svl_ids": tuple(move.stock_valuation_layer_ids.ids),
+        }
+        self._cr.execute(query, params)
+
+    def _action_done(self, cancel_backorder=False):
         _super = super(StockMove, self)
-        result = _super._action_done()
+        result = _super._action_done(cancel_backorder=cancel_backorder)
         for move in self:
             if move.date_backdating:
-                move.write({"date": move.date_backdating})
+                move.write(
+                    {
+                        "date": move.date_backdating,
+                    }
+                )
+                self._update_svl_backdate(move)
         return result
 
-    @api.multi
     def _account_entry_move(self):
         context = self._context.copy()
         if self.date_backdating:
