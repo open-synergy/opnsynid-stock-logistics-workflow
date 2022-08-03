@@ -18,7 +18,8 @@
         "stock_account",
     ],
     "data": [
-        "views/stock_picking_view.xml",
+        "views/stock_picking_views.xml",
+        "views/stock_move_views.xml",
     ],
     "installable": True,
 }
