@@ -50,11 +50,13 @@ class StockMove(models.Model):
                 self._update_svl_backdate(move)
         return result
 
-    def _account_entry_move(self):
+    def _account_entry_move(self, qty, description, svl_id, cost):
         context = self._context.copy()
         if self.date_backdating:
             ctx = {
                 "force_period_date": self.date_backdating,
             }
             context.update(ctx)
-        return super(StockMove, self.with_context(context))._account_entry_move()
+        return super(StockMove, self.with_context(context))._account_entry_move(
+            qty, description, svl_id, cost
+        )
