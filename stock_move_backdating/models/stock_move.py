@@ -26,16 +26,17 @@ class StockMove(models.Model):
                 )
 
     def _update_svl_backdate(self, move):
-        query = """
-            UPDATE public.stock_valuation_layer
-                SET create_date = %(create_date)s
-            WHERE id IN %(svl_ids)s
-        """
-        params = {
-            "create_date": move.date_backdating,
-            "svl_ids": tuple(move.stock_valuation_layer_ids.ids),
-        }
-        self._cr.execute(query, params)
+        if len(move.stock_valuation_layer_ids) > 0:
+            query = """
+                UPDATE public.stock_valuation_layer
+                    SET create_date = %(create_date)s
+                WHERE id IN %(svl_ids)s
+            """
+            params = {
+                "create_date": move.date_backdating,
+                "svl_ids": tuple(move.stock_valuation_layer_ids.ids),
+            }
+            self._cr.execute(query, params)
 
     def _action_done(self, cancel_backorder=False):
         _super = super(StockMove, self)
