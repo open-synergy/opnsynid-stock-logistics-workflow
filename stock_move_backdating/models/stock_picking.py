@@ -11,7 +11,7 @@ class StockPicking(models.Model):
     date_backdating = fields.Datetime(
         string="Actual Movement Date",
         compute="_compute_date_backdating",
-        inverse="_set_move_lines_date_backdating",
+        inverse="_inverse_set_move_lines_date_backdating",
         store=True,
         readonly=True,
         states={
@@ -19,7 +19,7 @@ class StockPicking(models.Model):
                 ("readonly", False),
             ],
         },
-    )    
+    )
 
     @api.depends(
         "move_lines",
@@ -30,13 +30,13 @@ class StockPicking(models.Model):
             if record.move_lines:
                 record.date_backdating = record.move_lines[0].date_backdating
 
-    def _set_move_lines_date_backdating(self):
+    def _inverse_set_move_lines_date_backdating(self):
         for picking in self:
-            picking.move_lines.write({'date_backdating': picking.date_backdating})                
+            picking.move_lines.write({"date_backdating": picking.date_backdating})
 
-    def action_done(self):
+    def _action_done(self):
         _super = super(StockPicking, self)
-        result = _super.action_done()
-        dates = self.mapped("move_lines.date")
-        self.write({"date_done": max(dates)})
+        result = _super._action_done()
+        if self.date_backdating:
+            self.write({"date_done": self.date_backdating})
         return result
