@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+stock_move_processing_invoice_employee,stock.move_processing_invoice - employee,model_stock_move_processing_invoice,base.group_user,1,1,1,1
+stock_move_processing_invoice_all,stock.move_processing_invoice - all,model_stock_move_processing_invoice,,1,0,0,0
+stock_move_processing_item_employee,stock.move_processing_item - employee,model_stock_move_processing_item,base.group_user,1,1,1,1
+stock_move_processing_item_all,stock.move_processing_item - all,model_stock_move_processing_item,,1,0,0,0
+stock_piciking_type_processing_item_employee,stock.picking_type_processing_item - employee,model_stock_picking_type_processing_item,base.group_user,1,1,1,1
+stock_piciking_type_processing_item_all,stock.picking_type_processing_item - all,model_stock_picking_type_processing_item,,1,0,0,0
